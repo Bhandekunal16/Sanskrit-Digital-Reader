@@ -344,5 +344,46 @@ export const SANSKRIT_TRANSLATIONS: SanskritTranslationEntry[] = [
     type: 'phrase',
     category: 'Classical Maxim',
     context: 'The triad of Indian aesthetics and metaphysical philosophy.'
+  },
+  {
+    id: 'asato-ma-full',
+    sanskrit: 'असतो मा सद्गमय ।\nतमसो मा ज्योतिर्गमय ।\nमृत्योर्मा अमृतं गमय ॥',
+    iast: 'asato mā sadgamaya | tamaso mā jyotirgamaya | mṛtyormā amṛtaṃ gamaya ||',
+    hindi: 'मुझे असत्य से सत्य की ओर ले चलो।\nमुझे अंधकार से प्रकाश की ओर ले चलो।\nमुझे मृत्यु से अमरता की ओर ले चलो।',
+    marathi: 'मला असत्याकडून सत्याकडे ने.\nमला अंधाराकडून प्रकाशाकडे ने.\nमला मृत्यूकडून अमरत्वाकडे ने.',
+    english: 'Lead me from falsehood to truth.\nLead me from darkness to light.\nLead me from death to immortality.',
+    type: 'sentence',
+    category: 'Bṛhadāraṇyaka Upaniṣad (1.3.28)',
+    context: 'Pāvamāna Mantra from the Bṛhadāraṇyaka Upaniṣad.'
+  },
+  {
+    id: 'asato-ma-line1',
+    sanskrit: 'असतो मा सद्गमय',
+    iast: 'asato mā sadgamaya',
+    hindi: 'मुझे असत्य से सत्य की ओर ले चलो',
+    marathi: 'मला असत्याकडून सत्याकडे ने',
+    english: 'Lead me from falsehood to truth',
+    type: 'phrase',
+    category: 'Upaniṣad'
+  },
+  {
+    id: 'tamaso-ma-line2',
+    sanskrit: 'तमसो मा ज्योतिर्गमय',
+    iast: 'tamaso mā jyotirgamaya',
+    hindi: 'मुझे अंधकार से प्रकाश की ओर ले चलो',
+    marathi: 'मला अंधाराकडून प्रकाशाकडे ने',
+    english: 'Lead me from darkness to light',
+    type: 'phrase',
+    category: 'Upaniṣad'
+  },
+  {
+    id: 'mrtyorma-line3',
+    sanskrit: 'मृत्योर्मा अमृतं गमय',
+    iast: 'mṛtyormā amṛtaṃ gamaya',
+    hindi: 'मुझे मृत्यु से अमरता की ओर ले चलो',
+    marathi: 'मला मृत्यूकडून अमरत्वाकडे ने',
+    english: 'Lead me from death to immortality',
+    type: 'phrase',
+    category: 'Upaniṣad'
   }
 ];

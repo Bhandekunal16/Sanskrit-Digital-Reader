@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RouterProvider, usePathname, useRouter, Link } from './lib/router';
+import { SanskritWorkspaceProvider, useSanskritWorkspace } from './lib/sanskrit-context';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { WordAnalysis } from './components/WordAnalysis';
@@ -16,7 +17,7 @@ import { TechnologySection } from './components/TechnologySection';
 import { DigitalPreservation } from './components/DigitalPreservation';
 import { Footer } from './components/Footer';
 import { SANSKRIT_DICTIONARY, SanskritEntry } from './data/sanskritDictionary';
-import { searchDictionary } from './lib/dictionary';
+import { searchDictionary, getEntryByDevanagari } from './lib/dictionary';
 import { 
   BookOpen, 
   ArrowRightLeft, 
@@ -25,12 +26,14 @@ import {
   Cpu, 
   Info,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 
 function AppContent() {
   const pathname = usePathname();
   const router = useRouter();
+  const { setSelectedTokenBySurface, selectedToken, loadSample } = useSanskritWorkspace();
 
   const [searchQuery, setSearchQuery] = useState<string>('धर्मः');
   const [selectedEntry, setSelectedEntry] = useState<SanskritEntry | null>(
@@ -40,7 +43,7 @@ function AppContent() {
   const [suggestions, setSuggestions] = useState<SanskritEntry[]>([]);
   const [posFilter, setPosFilter] = useState<string>('all');
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     const result = searchDictionary(query);
 
@@ -48,40 +51,59 @@ function AppContent() {
       setSelectedEntry(result.exactMatch);
       setNotFoundQuery('');
       setSuggestions([]);
+      setSelectedTokenBySurface(result.exactMatch.devanagari);
     } else if (result.matches.length > 0) {
       setSelectedEntry(result.matches[0]);
       setNotFoundQuery('');
       setSuggestions(result.matches);
+      setSelectedTokenBySurface(result.matches[0].devanagari);
     } else {
       setSelectedEntry(null);
       setNotFoundQuery(query);
       setSuggestions(result.suggestions);
+      setSelectedTokenBySurface(query);
     }
 
     // Direct to dictionary page if searching from another page
     if (pathname !== '/dictionary' && pathname !== '/') {
       router.push('/dictionary');
     }
-  };
+  }, [pathname, router, setSelectedTokenBySurface]);
 
-  const handleSelectWord = (word: string) => {
+  const handleSelectWord = useCallback((word: string) => {
     setSearchQuery(word);
     handleSearch(word);
+    setSelectedTokenBySurface(word);
     if (pathname !== '/dictionary') {
       router.push('/dictionary');
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [handleSearch, pathname, router, setSelectedTokenBySurface]);
 
   const handleSelectEntry = (entry: SanskritEntry) => {
     setSelectedEntry(entry);
     setSearchQuery(entry.devanagari);
     setNotFoundQuery('');
     setSuggestions([]);
+    setSelectedTokenBySurface(entry.devanagari);
   };
 
+  // Keep dictionary entry updated if selected token changes
+  useEffect(() => {
+    if (selectedToken && selectedToken.clean) {
+      const match = getEntryByDevanagari(selectedToken.clean);
+      if (match) {
+        setSelectedEntry(match);
+        setNotFoundQuery('');
+      } else {
+        setSelectedEntry(null);
+        setNotFoundQuery(selectedToken.clean);
+      }
+    }
+  }, [selectedToken]);
+
   // Filtered dictionary list for browse mode
-  const filteredLexicon = React.useMemo(() => {
+  const filteredLexicon = useMemo(() => {
     if (posFilter === 'all') return SANSKRIT_DICTIONARY;
     return SANSKRIT_DICTIONARY.filter(e => e.partOfSpeech === posFilter);
   }, [posFilter]);
@@ -126,7 +148,7 @@ function AppContent() {
                 
                 <Link
                   href="/dictionary"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between"
+                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
@@ -147,7 +169,7 @@ function AppContent() {
 
                 <Link
                   href="/transliteration"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between"
+                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
@@ -168,7 +190,7 @@ function AppContent() {
 
                 <Link
                   href="/translation"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between"
+                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
@@ -189,7 +211,7 @@ function AppContent() {
 
                 <Link
                   href="/reader"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between"
+                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
@@ -277,32 +299,36 @@ function AppContent() {
                 {/* POS Filter Tabs */}
                 <div className="flex items-center gap-1 bg-[#F7F4EE] p-1 rounded-lg border border-[#E8E1D5] text-xs">
                   <button
+                    type="button"
                     onClick={() => setPosFilter('all')}
-                    className={`px-2.5 py-1 rounded transition-colors ${
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
                       posFilter === 'all' ? 'bg-white text-[#1C1917] font-semibold shadow-2xs' : 'text-[#78716C] hover:text-[#1C1917]'
                     }`}
                   >
                     All
                   </button>
                   <button
+                    type="button"
                     onClick={() => setPosFilter('noun')}
-                    className={`px-2.5 py-1 rounded transition-colors ${
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
                       posFilter === 'noun' ? 'bg-white text-[#1C1917] font-semibold shadow-2xs' : 'text-[#78716C] hover:text-[#1C1917]'
                     }`}
                   >
                     Nouns
                   </button>
                   <button
+                    type="button"
                     onClick={() => setPosFilter('verb')}
-                    className={`px-2.5 py-1 rounded transition-colors ${
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
                       posFilter === 'verb' ? 'bg-white text-[#1C1917] font-semibold shadow-2xs' : 'text-[#78716C] hover:text-[#1C1917]'
                     }`}
                   >
                     Verbs
                   </button>
                   <button
+                    type="button"
                     onClick={() => setPosFilter('indeclinable')}
-                    className={`px-2.5 py-1 rounded transition-colors ${
+                    className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
                       posFilter === 'indeclinable' ? 'bg-white text-[#1C1917] font-semibold shadow-2xs' : 'text-[#78716C] hover:text-[#1C1917]'
                     }`}
                   >
@@ -318,11 +344,12 @@ function AppContent() {
                   return (
                     <button
                       key={item.id}
+                      type="button"
                       onClick={() => {
                         handleSelectEntry(item);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className={`p-3.5 text-left rounded-xl border transition-all flex flex-col justify-between group ${
+                      className={`p-3.5 text-left rounded-xl border transition-all flex flex-col justify-between group cursor-pointer ${
                         isSelected
                           ? 'bg-[#FAF7F2] border-[#8C4A2F] ring-1 ring-[#8C4A2F]/30'
                           : 'bg-[#FBF9F5] border-[#EAE3D6] hover:bg-[#F5EFEB] hover:border-[#D6CEBE]'
@@ -447,7 +474,9 @@ function AppContent() {
 export default function App() {
   return (
     <RouterProvider>
-      <AppContent />
+      <SanskritWorkspaceProvider>
+        <AppContent />
+      </SanskritWorkspaceProvider>
     </RouterProvider>
   );
 }

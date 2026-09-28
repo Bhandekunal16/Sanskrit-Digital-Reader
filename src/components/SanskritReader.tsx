@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { SANSKRIT_PASSAGES, SanskritPassage, PassageWordToken } from '../data/passages';
+import { useSanskritWorkspace } from '../lib/sanskrit-context';
+import { SANSKRIT_PASSAGES, SanskritPassage } from '../data/passages';
 import { TargetLanguage } from '../lib/translation';
-import { analyzeSanskritPhonology } from '../lib/phonology';
-import { getEntryByDevanagari } from '../lib/dictionary';
 import { LanguageSelector } from './LanguageSelector';
 import { 
   BookOpen, 
@@ -10,13 +9,17 @@ import {
   Volume2, 
   GitFork, 
   Layers, 
-  ArrowRight,
-  Info,
-  CheckCircle2,
-  ListOrdered,
-  Globe,
-  ExternalLink,
-  Activity
+  ArrowRight, 
+  ArrowLeft,
+  Info, 
+  CheckCircle2, 
+  ListOrdered, 
+  Globe, 
+  ExternalLink, 
+  Activity,
+  RotateCcw,
+  Compass,
+  FileText
 } from 'lucide-react';
 
 interface SanskritReaderProps {
@@ -24,31 +27,31 @@ interface SanskritReaderProps {
 }
 
 export const SanskritReader: React.FC<SanskritReaderProps> = ({ onSelectWordForDictionary }) => {
-  const [selectedPassageId, setSelectedPassageId] = useState<string>('vidya-subhashita');
-  const [targetLanguage, setTargetLanguage] = useState<TargetLanguage>('hindi');
-  const [selectedToken, setSelectedToken] = useState<PassageWordToken | null>(
-    SANSKRIT_PASSAGES[0].tokens[0][0] // Default to first word 'विद्या'
-  );
+  const {
+    inputText,
+    document,
+    selectedTokenId,
+    selectedToken,
+    selectedLineIndex,
+    setSelectedTokenId,
+    setSelectedTokenBySurface,
+    setSelectedLineIndex,
+    targetLanguage,
+    setTargetLanguage,
+    loadSample
+  } = useSanskritWorkspace();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAnvaya, setShowAnvaya] = useState(false);
+  const [readerMode, setReaderMode] = useState<'workspace' | 'curated'>('workspace');
+  const [selectedPassageId, setSelectedPassageId] = useState<string>('vidya-subhashita');
 
   const currentPassage = SANSKRIT_PASSAGES.find(p => p.id === selectedPassageId) || SANSKRIT_PASSAGES[0];
 
-  const tokenPhonology = useMemo(() => {
-    if (!selectedToken || selectedToken.isPunctuation) return null;
-    return analyzeSanskritPhonology(selectedToken.word);
-  }, [selectedToken]);
-
-  const dictEntry = useMemo(() => {
-    if (!selectedToken || selectedToken.isPunctuation) return null;
-    return getEntryByDevanagari(selectedToken.word);
-  }, [selectedToken]);
-
   const handleSelectPassage = (passage: SanskritPassage) => {
     setSelectedPassageId(passage.id);
-    // Select first non-punctuation token
-    const firstWord = passage.tokens[0].find(t => !t.isPunctuation) || null;
-    setSelectedToken(firstWord);
+    loadSample(passage.lines.join('\n'));
+    setReaderMode('workspace');
   };
 
   const handlePronounce = (text: string, langCode: string = 'hi-IN') => {
@@ -64,35 +67,17 @@ export const SanskritReader: React.FC<SanskritReaderProps> = ({ onSelectWordForD
     }
   };
 
-  const getPassageTranslation = () => {
-    switch (targetLanguage) {
-      case 'hindi':
-        return currentPassage.translationHindi;
-      case 'marathi':
-        return currentPassage.translationMarathi;
-      case 'english':
-      default:
-        return currentPassage.translation;
+  const currentLine = document.lines[selectedLineIndex] || document.lines[0];
+
+  const handlePrevLine = () => {
+    if (selectedLineIndex > 0) {
+      setSelectedLineIndex(selectedLineIndex - 1);
     }
   };
 
-  const getTokenMeaning = (token: PassageWordToken) => {
-    switch (targetLanguage) {
-      case 'hindi':
-        return token.meaningHindi || token.meaning;
-      case 'marathi':
-        return token.meaningMarathi || token.meaning;
-      case 'english':
-      default:
-        return token.meaning;
-    }
-  };
-
-  const getLanguageLabel = () => {
-    switch (targetLanguage) {
-      case 'hindi': return 'Hindi (हिन्दी)';
-      case 'marathi': return 'Marathi (मराठी)';
-      case 'english': return 'English';
+  const handleNextLine = () => {
+    if (selectedLineIndex < document.lines.length - 1) {
+      setSelectedLineIndex(selectedLineIndex + 1);
     }
   };
 
@@ -100,22 +85,23 @@ export const SanskritReader: React.FC<SanskritReaderProps> = ({ onSelectWordForD
     <div className="space-y-8">
       
       {/* Passage Selector Bar */}
-      <div className="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-[#E8E1D5]">
+      <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-[#E8E1D5]">
         <div className="flex items-center gap-2">
           <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
-            Select Curated Text:
+            Curated Classical Passages:
           </span>
         </div>
 
         {/* Interactive passage selector tabs */}
         <div className="flex flex-wrap gap-2">
           {SANSKRIT_PASSAGES.map((passage) => {
-            const isActive = passage.id === currentPassage.id;
+            const isActive = inputText === passage.lines.join('\n') || selectedPassageId === passage.id;
             return (
               <button
                 key={passage.id}
+                type="button"
                 onClick={() => handleSelectPassage(passage)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#2C241E] text-white shadow-xs'
                     : 'bg-[#FFFFFF] text-[#57534E] hover:bg-[#F2ECE1] border border-[#E0D8CA]'
@@ -138,258 +124,334 @@ export const SanskritReader: React.FC<SanskritReaderProps> = ({ onSelectWordForD
             {/* Passage Header */}
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
-                <h3 className="font-serif-editorial text-2xl font-semibold text-[#1C1917]">
-                  {currentPassage.title}
-                </h3>
-                {/* Unboxed metadata with typographic separators */}
-                <div className="flex items-center gap-2 text-xs text-[#78716C] mt-1">
-                  <span>{currentPassage.source}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>Meter: {currentPassage.meter}</span>
+                <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1">
+                  Classical Reading Canvas
+                </span>
+                <h2 className="font-serif-editorial text-2xl sm:text-3xl font-semibold text-[#1C1917]">
+                  Interactive Multi-Line Reader
+                </h2>
+                <p className="text-xs text-[#78716C] mt-1">
+                  Click any Sanskrit token to inspect its Sandhi segmentation, grammatical case, and place of articulation.
+                </p>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAnvaya(!showAnvaya)}
+                  className={`p-2 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                    showAnvaya 
+                      ? 'bg-[#FAF7F2] border-[#8C4A2F] text-[#8C4A2F]' 
+                      : 'bg-white border-[#E0D8CA] text-[#57534E] hover:bg-[#F2ECE1]'
+                  }`}
+                  title="Toggle Anvaya Prose Order"
+                >
+                  <ListOrdered className="w-4 h-4" />
+                  <span className="hidden sm:inline">Anvaya</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handlePronounce(document.rawText)}
+                  className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#F2ECE1] rounded-lg transition-colors border border-[#E0D8CA] cursor-pointer"
+                  title="Recite entire text"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Line Navigation Bar */}
+            {document.lines.length > 1 && (
+              <div className="mb-4 p-2.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-[#57534E]">Line Navigation:</span>
+                  <span className="font-mono-code text-[#8C4A2F] bg-white px-2 py-0.5 rounded border border-[#E0D8CA]">
+                    Line {selectedLineIndex + 1} of {document.lines.length}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={selectedLineIndex === 0}
+                    onClick={handlePrevLine}
+                    className="p-1 px-2 bg-white disabled:opacity-40 border border-[#E0D8CA] rounded hover:bg-[#F5EFEB] transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <ArrowLeft className="w-3 h-3" />
+                    <span>Prev</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={selectedLineIndex >= document.lines.length - 1}
+                    onClick={handleNextLine}
+                    className="p-1 px-2 bg-white disabled:opacity-40 border border-[#E0D8CA] rounded hover:bg-[#F5EFEB] transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Next</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
+            )}
 
-              <button
-                onClick={() => handlePronounce(currentPassage.lines.join(' '))}
-                className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#F2ECE1] rounded-lg transition-colors border border-[#E8E1D5] shrink-0"
-                title="Listen to full verse recitation"
-                aria-label="Listen to full verse recitation"
-              >
-                <Volume2 className={`w-4 h-4 ${isPlaying ? 'animate-pulse text-[#8C4A2F]' : ''}`} />
-              </button>
-            </div>
+            {/* Interactive Sanskrit Verse Display (Multi-Line Preserved) */}
+            <div className="p-6 bg-[#FAF7F2]/60 rounded-xl border border-[#EAE3D6] mb-6 space-y-4">
+              {document.lines.map((line, lineIdx) => {
+                const isLineActive = selectedLineIndex === lineIdx;
+                return (
+                  <div
+                    key={lineIdx}
+                    onClick={() => setSelectedLineIndex(lineIdx)}
+                    className={`p-3 rounded-lg transition-all cursor-pointer ${
+                      isLineActive 
+                        ? 'bg-white shadow-2xs border border-[#8C4A2F]/30 ring-1 ring-[#8C4A2F]/20' 
+                        : 'hover:bg-white/60 border border-transparent'
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-2 leading-loose">
+                      {line.tokens.map((token) => {
+                        if (token.isPunctuation) {
+                          return (
+                            <span
+                              key={token.id}
+                              className="font-devanagari font-bold text-xl sm:text-2xl text-[#8C4A2F]"
+                            >
+                              {token.punctuationAfter || token.surface}
+                            </span>
+                          );
+                        }
 
-            {/* Interactive Sanskrit Words Grid */}
-            <div className="p-6 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl my-4">
-              <div className="space-y-4">
-                {currentPassage.tokens.map((lineTokens, lineIdx) => (
-                  <div key={lineIdx} className="flex flex-wrap items-center gap-x-2.5 gap-y-2 leading-relaxed">
-                    {lineTokens.map((token, tokenIdx) => {
-                      if (token.isPunctuation) {
+                        const isTokenSelected = selectedTokenId === token.id || selectedTokenId === token.clean;
+
                         return (
-                          <span key={tokenIdx} className="font-devanagari text-2xl sm:text-3xl text-[#8C4A2F] font-bold px-0.5">
-                            {token.word}
-                          </span>
+                          <button
+                            key={token.id}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedTokenId(token.id);
+                              setSelectedLineIndex(lineIdx);
+                            }}
+                            className={`px-2 py-1 rounded-md font-devanagari font-bold text-xl sm:text-2xl transition-all cursor-pointer ${
+                              isTokenSelected
+                                ? 'bg-[#8C4A2F] text-white shadow-xs scale-105'
+                                : 'text-[#1C1917] hover:bg-[#EAE3D6] hover:text-[#8C4A2F]'
+                            }`}
+                          >
+                            {token.surface}
+                          </button>
                         );
-                      }
+                      })}
+                    </div>
 
-                      const isSelected = selectedToken?.word === token.word && selectedToken?.grammar === token.grammar;
-
-                      return (
-                        <button
-                          key={tokenIdx}
-                          type="button"
-                          onClick={() => setSelectedToken(token)}
-                          className={`group relative px-2.5 py-1 rounded-md font-devanagari text-2xl sm:text-3xl font-medium transition-all focus:outline-none ${
-                            isSelected
-                              ? 'bg-[#8C4A2F] text-white shadow-xs ring-2 ring-[#8C4A2F]/40'
-                              : 'text-[#1C1917] hover:bg-[#EFE7D8] hover:text-[#8C4A2F]'
-                          }`}
-                        >
-                          <span>{token.word}</span>
-                          {/* Subtle hover underline */}
-                          <span className={`absolute bottom-0 left-1 right-1 h-0.5 transition-opacity ${
-                            isSelected ? 'bg-white/80' : 'bg-transparent group-hover:bg-[#8C4A2F]/40'
-                          }`} />
-                        </button>
-                      );
-                    })}
+                    <div className="font-mono-code text-xs text-[#8C4A2F] mt-1">
+                      {line.sourceIast}
+                    </div>
                   </div>
-                ))}
-              </div>
-
-              <p className="text-[11px] text-[#A8A29E] mt-4 pt-3 border-t border-[#E8E1D5]/60 flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-[#8C4A2F]" />
-                <span>Click on any word to inspect its morphological case, root (dhātu), and multilingual translation.</span>
-              </p>
+                );
+              })}
             </div>
 
-            {/* Dynamic Passage Translation Deck with Language Selector */}
-            <div className="mt-6 pt-4 border-t border-[#F2EDE2]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>{getLanguageLabel()} Translation</span>
-                </span>
-
-                {/* Reader Language Switcher */}
-                <LanguageSelector
-                  selectedLanguage={targetLanguage}
-                  onLanguageChange={setTargetLanguage}
-                  className="scale-90 origin-left sm:origin-right"
-                />
-              </div>
-
-              <p className={`text-lg text-[#292524] leading-relaxed p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl ${
-                targetLanguage === 'english' ? 'font-serif-editorial italic' : 'font-devanagari font-medium'
-              }`}>
-                "{getPassageTranslation()}"
-              </p>
-            </div>
-
-          </div>
-
-          {/* Anvaya (Prose Order) Accordion / Toggle */}
-          <div className="mt-6 pt-4 border-t border-[#F2EDE2]">
-            <button
-              onClick={() => setShowAnvaya(!showAnvaya)}
-              className="flex items-center justify-between w-full text-xs font-semibold text-[#57534E] hover:text-[#1C1917] transition-colors"
-            >
-              <span className="flex items-center gap-1.5">
-                <ListOrdered className="w-3.5 h-3.5 text-[#8C4A2F]" />
-                <span>View Pāṇinian Prose Order (अन्वयः)</span>
-              </span>
-              <span className="text-[#8C4A2F]">{showAnvaya ? 'Hide' : 'Show'}</span>
-            </button>
-
+            {/* Anvaya (Prose Order) Card if active */}
             {showAnvaya && (
-              <div className="mt-3 p-3.5 bg-[#FBF9F5] border border-[#EAE3D6] rounded-lg">
+              <div className="p-4 bg-[#FFFFFF] border border-[#EAE3D6] rounded-xl mb-6 space-y-2">
+                <div className="flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
+                  <ListOrdered className="w-3.5 h-3.5" />
+                  <span>अन्वयः (Pāṇinian Natural Prose Order)</span>
+                </div>
                 <p className="font-devanagari text-base text-[#1C1917] leading-relaxed">
-                  {currentPassage.anvaya}
-                </p>
-                <p className="text-xs text-[#78716C] mt-2">
-                  {currentPassage.explanation}
+                  {document.allTokens.map(t => t.surface).join(' ')}
                 </p>
               </div>
             )}
+
+          </div>
+
+          {/* Passage Translation Section */}
+          <div className="pt-6 border-t border-[#EAE3D6]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E]">
+                Full Translation
+              </span>
+              <LanguageSelector
+                selectedLanguage={targetLanguage}
+                onLanguageChange={setTargetLanguage}
+              />
+            </div>
+
+            <p className={`text-base sm:text-lg text-[#1C1917] leading-relaxed whitespace-pre-line ${
+              targetLanguage === 'english' ? 'font-serif-editorial' : 'font-devanagari'
+            }`}>
+              {targetLanguage === 'hindi'
+                ? document.translations.hindi
+                : targetLanguage === 'marathi'
+                ? document.translations.marathi
+                : document.translations.english}
+            </p>
           </div>
 
         </div>
 
-        {/* Right / Side (5 cols): Word Morphological & Translation Analysis Panel */}
-        <div className="lg:col-span-5 flex flex-col">
-          {selectedToken ? (
-            <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 shadow-xs flex-1 flex flex-col justify-between">
-              
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EFE9DD]">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#8C4A2F]">
-                    Linguistic Token Inspection
-                  </span>
+        {/* Right / Bottom (5 cols): Token Detailed Inspector Panel */}
+        <div className="lg:col-span-5 space-y-6">
+          
+          <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 shadow-xs sticky top-20 space-y-5">
+            
+            <div className="flex items-center justify-between border-b border-[#EFE9DD] pb-3">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Selected Token Inspector</span>
+              </span>
+              {selectedToken && (
+                <span className="text-[10px] font-mono-code bg-[#FAF7F2] text-[#78716C] px-2 py-0.5 rounded border border-[#E8E1D5]">
+                  {selectedToken.confidence}
+                </span>
+              )}
+            </div>
+
+            {selectedToken ? (
+              <div className="space-y-4">
+                
+                {/* Surface and IAST Header */}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-devanagari font-bold text-3xl text-[#1C1917]">
+                      {selectedToken.surface}
+                    </h3>
+                    <span className="font-mono-code text-sm text-[#8C4A2F]">
+                      {selectedToken.iast}
+                    </span>
+                  </div>
+
                   <button
-                    onClick={() => handlePronounce(selectedToken.word)}
-                    className="p-1.5 text-[#78716C] hover:text-[#8C4A2F] rounded transition-colors"
+                    type="button"
+                    onClick={() => handlePronounce(selectedToken.clean || selectedToken.surface)}
+                    className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] cursor-pointer"
                     title="Pronounce word"
                   >
                     <Volume2 className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Primary Token Display */}
-                <div className="mb-4">
-                  <div className="font-devanagari font-bold text-4xl text-[#1C1917]">
-                    {selectedToken.word}
-                  </div>
-                  <div className="font-mono-code text-lg text-[#8C4A2F] font-medium mt-0.5">
-                    {selectedToken.iast}
-                  </div>
-                </div>
-
-                {/* Contextual Meaning in Selected Language */}
-                <div className="p-3.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl mb-4">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block mb-0.5">
-                    Meaning ({getLanguageLabel()})
+                {/* Multilingual Meanings */}
+                <div className="p-3.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block">
+                    Lexical Meanings
                   </span>
-                  <p className={`text-lg text-[#1C1917] font-medium ${
-                    targetLanguage === 'english' ? 'font-serif-editorial' : 'font-devanagari'
-                  }`}>
-                    {getTokenMeaning(selectedToken)}
-                  </p>
+                  
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#8C4A2F] min-w-[50px]">Hindi:</span>
+                      <span className="font-devanagari text-[#1C1917]">
+                        {selectedToken.meanings.hindi || '—'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#8C4A2F] min-w-[50px]">Marathi:</span>
+                      <span className="font-devanagari text-[#1C1917]">
+                        {selectedToken.meanings.marathi || '—'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#8C4A2F] min-w-[50px]">English:</span>
+                      <span className="font-serif-editorial text-[#1C1917]">
+                        {selectedToken.meanings.english || '—'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Grammatical breakdown */}
-                <div className="space-y-3">
-                  <div className="p-3 bg-[#FBF9F5] border border-[#EAE3D6] rounded-lg">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#57534E] mb-1">
-                      <Layers className="w-3.5 h-3.5 text-[#8C4A2F]" />
-                      <span>Grammatical Information</span>
+                {/* Sandhi & Compound Split Card */}
+                {selectedToken.sandhi && selectedToken.sandhi.isCompound && (
+                  <div className="p-3.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] flex items-center gap-1">
+                        <GitFork className="w-3 h-3 text-[#8C4A2F]" />
+                        <span>Sandhi & Compound Split</span>
+                      </span>
+                      <span className="text-[10px] font-mono-code text-[#8C4A2F] bg-white px-1.5 py-0.5 rounded border border-[#E0D8CA]">
+                        {selectedToken.sandhi.confidence}
+                      </span>
                     </div>
-                    <p className="text-sm text-[#1C1917] font-medium">
-                      {selectedToken.grammar}
+
+                    <div className="font-devanagari font-semibold text-sm text-[#1C1917]">
+                      {selectedToken.sandhi.possibleSplit.join(' + ')}
+                    </div>
+                    <div className="text-[11px] text-[#8C4A2F] font-medium">
+                      {selectedToken.sandhi.sanskritTerm} ({selectedToken.sandhi.ruleName})
+                    </div>
+                    <p className="text-xs text-[#57534E] leading-relaxed">
+                      {selectedToken.sandhi.explanation}
                     </p>
                   </div>
+                )}
 
-                  {selectedToken.root && (
-                    <div className="p-3 bg-[#FBF9F5] border border-[#EAE3D6] rounded-lg">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#57534E] mb-1">
-                        <GitFork className="w-3.5 h-3.5 text-[#8C4A2F]" />
-                        <span>Root / Dhātu (धातु)</span>
+                {/* Grammatical and Root Analysis */}
+                {selectedToken.grammar && (
+                  <div className="p-3 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-1">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block">
+                      Grammatical Form (व्याकरणम्)
+                    </span>
+                    <p className="text-xs text-[#1C1917] leading-relaxed">
+                      {selectedToken.grammar}
+                    </p>
+                    {selectedToken.root && (
+                      <div className="text-xs text-[#8C4A2F] pt-1">
+                        <strong>Root (धातु):</strong> {selectedToken.root} {selectedToken.rootIast && `(${selectedToken.rootIast})`}
                       </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-devanagari font-bold text-lg text-[#1C1917]">
-                          {selectedToken.root}
+                    )}
+                  </div>
+                )}
+
+                {/* Live Phonological Breakdown for Token */}
+                {selectedToken.phonology && selectedToken.phonology.phonemes.length > 0 && (
+                  <div className="p-3.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] flex items-center gap-1">
+                      <Activity className="w-3 h-3 text-[#8C4A2F]" />
+                      <span>Phoneme Articulation (स्थानम्)</span>
+                    </span>
+
+                    <div className="flex flex-wrap gap-1">
+                      {selectedToken.phonology.phonemes.map((p, idx) => (
+                        <span
+                          key={idx}
+                          className="px-1.5 py-0.5 bg-white border border-[#E0D8CA] rounded text-[10px] font-mono-code"
+                          title={`${p.groupName}: ${p.placeOfArticulation}`}
+                        >
+                          <span className="font-devanagari font-bold">{p.grapheme}</span> ({p.iast})
                         </span>
-                        {selectedToken.rootIast && (
-                          <span className="font-mono-code text-xs text-[#8C4A2F]">
-                            ({selectedToken.rootIast})
-                          </span>
-                        )}
-                      </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {selectedToken.sandhiSplit && (
-                    <div className="p-3 bg-[#FAF7F2] border border-[#EAE3D6] rounded-lg">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block mb-0.5">
-                        Sandhi Resolution (पदच्छेदः)
-                      </span>
-                      <p className="font-mono-code text-xs text-[#1C1917] bg-white p-1.5 rounded border border-[#E5DECF]">
-                        {selectedToken.sandhiSplit}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Dynamic Computed Phonological Decomposition */}
-                  {tokenPhonology && tokenPhonology.phonemes.length > 0 && (
-                    <div className="p-3 bg-[#FAF7F2] border border-[#EAE3D6] rounded-lg">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block mb-1">
-                        Phoneme Articulation (स्थानम्)
-                      </span>
-                      <div className="flex flex-wrap gap-1">
-                        {tokenPhonology.phonemes.map((p, i) => (
-                          <span
-                            key={i}
-                            className="px-1.5 py-0.5 bg-white border border-[#E0D8CA] rounded text-[11px] font-mono-code"
-                            title={`${p.groupName}: ${p.placeOfArticulation}`}
-                          >
-                            <span className="font-devanagari font-bold">{p.grapheme}</span>
-                            <span className="text-[#8C4A2F] ml-0.5">({p.iast})</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Inspect in Dictionary Button if word or root is linked */}
+                {/* Cross-Link to Dictionary */}
                 {onSelectWordForDictionary && (
-                  <div className="mt-4 pt-3 border-t border-[#EFE9DD]">
+                  <div className="pt-2">
                     <button
                       type="button"
-                      onClick={() => onSelectWordForDictionary(dictEntry ? dictEntry.devanagari : selectedToken.word)}
-                      className="w-full py-2 px-3 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-[#8C4A2F] border border-[#E5DECF] rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                      onClick={() => onSelectWordForDictionary(selectedToken.clean || selectedToken.surface)}
+                      className="w-full py-2.5 px-3 bg-[#FAF7F2] hover:bg-[#8C4A2F] text-[#8C4A2F] hover:text-white border border-[#E8E1D5] hover:border-[#8C4A2F] rounded-xl text-xs font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
-                      <span>Inspect "{selectedToken.word}" in Dictionary</span>
-                      <ArrowRight className="w-3 h-3 ml-0.5" />
+                      <span>Explore "{selectedToken.clean || selectedToken.surface}" in Digital Lexicon</span>
+                      <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>
                 )}
 
               </div>
-
-              <div className="mt-6 pt-4 border-t border-[#F2EDE2] text-xs text-[#78716C]">
-                Select other words in the verse to see their grammatical inflection and multilingual meanings.
+            ) : (
+              <div className="text-center py-8 text-xs text-[#78716C]">
+                Click any Sanskrit token in the reader to view its grammatical analysis.
               </div>
+            )}
 
-            </div>
-          ) : (
-            <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 shadow-xs flex-1 flex flex-col items-center justify-center text-center text-[#78716C]">
-              <BookOpen className="w-8 h-8 text-[#D6CEBE] mb-2" />
-              <p className="text-sm font-medium text-[#1C1917]">No word selected</p>
-              <p className="text-xs max-w-xs mt-1">Click on any Sanskrit word token in the reader panel to inspect its morphological analysis.</p>
-            </div>
-          )}
+          </div>
+
         </div>
 
       </div>

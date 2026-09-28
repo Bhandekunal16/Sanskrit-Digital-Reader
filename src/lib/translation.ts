@@ -1,14 +1,12 @@
 import { SANSKRIT_TRANSLATIONS, SanskritTranslationEntry } from '../data/translations';
-import { SANSKRIT_DICTIONARY } from '../data/sanskritDictionary';
 import { 
-  tokenizeSanskrit, 
-  normalizeSanskrit, 
-  ParsedSanskritDocument, 
+  analyzeSanskritDocument, 
+  SanskritDocument, 
+  SanskritToken, 
   SanskritLine, 
-  SanskritToken 
-} from './sanskrit-tokenizer';
-import { analyzeSanskritToken, SanskritTokenAnalysis } from './sanskrit-analysis';
-import { devanagariToIast } from './transliteration';
+  TranslationStatus, 
+  TranslationSource 
+} from './sanskrit-analysis';
 
 export type TargetLanguage = 'hindi' | 'marathi' | 'english';
 
@@ -20,7 +18,24 @@ export interface TranslatedLineResult {
   marathi: string;
   english: string;
   tier: 'exact_sentence' | 'known_phrase' | 'lexical_gloss' | 'empty';
-  tokenAnalyses: SanskritTokenAnalysis[];
+  tokens: SanskritToken[];
+}
+
+export interface WordBreakdownItem {
+  id: string;
+  word: string;
+  clean: string;
+  iast: string;
+  hindi: string;
+  marathi: string;
+  english: string;
+  found: boolean;
+  status: TranslationStatus;
+  source: TranslationSource;
+  grammar?: string;
+  root?: string;
+  rootIast?: string;
+  partOfSpeech?: string;
 }
 
 export interface TranslationResultOutput {
@@ -37,17 +52,7 @@ export interface TranslationResultOutput {
     english: string;
   };
   lines: TranslatedLineResult[];
-  wordBreakdown: {
-    word: string;
-    clean: string;
-    iast: string;
-    hindi: string;
-    marathi: string;
-    english: string;
-    found: boolean;
-    grammar?: string;
-    root?: string;
-  }[];
+  wordBreakdown: WordBreakdownItem[];
   context?: string;
   category?: string;
   unknownCount: number;
@@ -55,121 +60,16 @@ export interface TranslationResultOutput {
 }
 
 /**
- * Normalizes string for sentence matching (removes dandas and excess spacing)
- */
-function cleanForSentenceMatch(str: string): string {
-  return str
-    .replace(/[।॥,;!?:()\[\]\-\/\\"'`~<>{}|+*&^%$#@]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/**
- * Translates a single Sanskrit line using 3-tier resolution:
- * Tier 1: Full-sentence canonical match
- * Tier 2: Phrase match
- * Tier 3: Dynamic tokenized lexical gloss
- */
-function translateLine(line: SanskritLine): TranslatedLineResult {
-  const lineText = line.originalText.trim();
-  if (!lineText) {
-    return {
-      lineNumber: line.lineNumber,
-      sourceText: '',
-      sourceIast: '',
-      hindi: '',
-      marathi: '',
-      english: '',
-      tier: 'empty',
-      tokenAnalyses: []
-    };
-  }
-
-  const lineIast = devanagariToIast(lineText);
-  const cleanedLine = cleanForSentenceMatch(lineText);
-
-  // 1. Check Exact Sentence Match in SANSKRIT_TRANSLATIONS
-  const exactSentence = SANSKRIT_TRANSLATIONS.find(
-    (t) =>
-      t.sanskrit === lineText ||
-      cleanForSentenceMatch(t.sanskrit) === cleanedLine ||
-      cleanForSentenceMatch(t.iast).toLowerCase() === cleanForSentenceMatch(lineIast).toLowerCase()
-  );
-
-  if (exactSentence) {
-    const tokenAnalyses = line.tokens.map(t => analyzeSanskritToken(t));
-    return {
-      lineNumber: line.lineNumber,
-      sourceText: lineText,
-      sourceIast: lineIast,
-      hindi: exactSentence.hindi,
-      marathi: exactSentence.marathi,
-      english: exactSentence.english,
-      tier: 'exact_sentence',
-      tokenAnalyses
-    };
-  }
-
-  // 2. Tokenize and analyze each token on this line
-  const tokenAnalyses: SanskritTokenAnalysis[] = line.tokens.map(t => analyzeSanskritToken(t));
-
-  // Build gloss translations for this line
-  const hindiWords: string[] = [];
-  const marathiWords: string[] = [];
-  const englishWords: string[] = [];
-
-  line.tokens.forEach((token, idx) => {
-    const analysis = tokenAnalyses[idx];
-    
-    // If it's pure punctuation
-    if (!token.clean && token.punctuationAfter) {
-      hindiWords.push(token.punctuationAfter);
-      marathiWords.push(token.punctuationAfter);
-      englishWords.push(token.punctuationAfter === '।' ? '.' : token.punctuationAfter === '॥' ? '..' : token.punctuationAfter);
-      return;
-    }
-
-    if (analysis) {
-      // Pick first primary gloss meaning
-      const hi = analysis.meaningHindi.split(',')[0].split('/')[0].trim();
-      const mr = analysis.meaningMarathi.split(',')[0].split('/')[0].trim();
-      const en = analysis.meaning.split(',')[0].split('/')[0].trim();
-
-      const leadPunc = token.punctuationBefore || '';
-      const trailPunc = token.punctuationAfter ? (token.punctuationAfter === '।' ? '।' : token.punctuationAfter) : '';
-      const enTrailPunc = token.punctuationAfter ? (token.punctuationAfter === '।' ? '.' : token.punctuationAfter === '॥' ? '..' : token.punctuationAfter) : '';
-
-      hindiWords.push(leadPunc + hi + trailPunc);
-      marathiWords.push(leadPunc + mr + trailPunc);
-      englishWords.push(leadPunc + en + enTrailPunc);
-    }
-  });
-
-  const assembledHindi = hindiWords.join(' ').replace(/\s+([।॥.,;!?])/g, '$1');
-  const assembledMarathi = marathiWords.join(' ').replace(/\s+([।॥.,;!?])/g, '$1');
-  const assembledEnglish = englishWords.join(' ').replace(/\s+([.,;!?])/g, '$1');
-
-  return {
-    lineNumber: line.lineNumber,
-    sourceText: lineText,
-    sourceIast: lineIast,
-    hindi: assembledHindi,
-    marathi: assembledMarathi,
-    english: assembledEnglish,
-    tier: 'lexical_gloss',
-    tokenAnalyses
-  };
-}
-
-/**
- * Translates arbitrary multi-line Sanskrit text into Hindi, Marathi, and English.
+ * Translates arbitrary multi-line Sanskrit text into Hindi, Marathi, and English
+ * using the unified Sanskrit document analysis engine.
  */
 export function translateSanskrit(
   input: string,
   targetLang: TargetLanguage = 'hindi'
 ): TranslationResultOutput {
-  const trimmed = normalizeSanskrit(input);
-  if (!trimmed) {
+  const doc = analyzeSanskritDocument(input);
+
+  if (!doc.rawText) {
     return {
       sourceText: '',
       sourceIast: '',
@@ -185,100 +85,60 @@ export function translateSanskrit(
     };
   }
 
-  // 1. Check if the entire multi-line block has an exact canonical match in SANSKRIT_TRANSLATIONS
-  const cleanedEntire = cleanForSentenceMatch(trimmed);
-  const exactBlock = SANSKRIT_TRANSLATIONS.find(
-    (t) =>
-      t.sanskrit === trimmed ||
-      cleanForSentenceMatch(t.sanskrit) === cleanedEntire
-  );
+  const lineResults: TranslatedLineResult[] = doc.lines.map((l) => ({
+    lineNumber: l.lineNumber,
+    sourceText: l.originalText,
+    sourceIast: l.sourceIast,
+    hindi: l.translations.hindi,
+    marathi: l.translations.marathi,
+    english: l.translations.english,
+    tier: l.tier,
+    tokens: l.tokens
+  }));
 
-  // 2. Tokenize into lines and tokens
-  const parsedDoc: ParsedSanskritDocument = tokenizeSanskrit(trimmed);
-  const lineResults: TranslatedLineResult[] = parsedDoc.lines.map(line => translateLine(line));
-
-  // 3. Assemble multi-line output
-  const multiLineHindi = lineResults.map(l => l.hindi).filter(Boolean).join('\n');
-  const multiLineMarathi = lineResults.map(l => l.marathi).filter(Boolean).join('\n');
-  const multiLineEnglish = lineResults.map(l => l.english).filter(Boolean).join('\n');
-  const multiLineIast = lineResults.map(l => l.sourceIast).filter(Boolean).join('\n');
-
-  // If entire text has exact match, prioritize canonical block translation
-  const finalHindi = exactBlock ? exactBlock.hindi : multiLineHindi;
-  const finalMarathi = exactBlock ? exactBlock.marathi : multiLineMarathi;
-  const finalEnglish = exactBlock ? exactBlock.english : multiLineEnglish;
-
-  // Determine overall tier
-  let overallTier: 'exact_sentence' | 'known_phrase' | 'lexical_gloss' | 'partial_gloss' = 'lexical_gloss';
-  if (exactBlock) {
-    overallTier = 'exact_sentence';
-  } else if (lineResults.every(l => l.tier === 'exact_sentence' || l.tier === 'empty')) {
-    overallTier = 'exact_sentence';
-  } else if (lineResults.some(l => l.tier === 'exact_sentence')) {
-    overallTier = 'partial_gloss';
-  }
-
-  // 4. Build dynamic word-level breakdown for ALL tokens
-  const breakdown: {
-    word: string;
-    clean: string;
-    iast: string;
-    hindi: string;
-    marathi: string;
-    english: string;
-    found: boolean;
-    grammar?: string;
-    root?: string;
-  }[] = [];
-
-  let unknownCount = 0;
-
-  parsedDoc.allTokens.forEach((token) => {
-    if (!token.clean) return; // Skip pure punctuation tokens
-
-    const analysis = analyzeSanskritToken(token);
-    if (!analysis.found) {
-      unknownCount++;
-    }
-
-    breakdown.push({
-      word: token.surface,
-      clean: token.clean,
-      iast: analysis.iast || token.iast,
-      hindi: analysis.meaningHindi,
-      marathi: analysis.meaningMarathi,
-      english: analysis.meaning,
-      found: analysis.found,
-      grammar: analysis.grammar,
-      root: analysis.root
-    });
-  });
+  const wordBreakdown: WordBreakdownItem[] = doc.allTokens.map((t) => ({
+    id: t.id,
+    word: t.surface,
+    clean: t.clean,
+    iast: t.iast,
+    hindi: t.meanings.hindi || '—',
+    marathi: t.meanings.marathi || '—',
+    english: t.meanings.english || '—',
+    found: t.found,
+    status: t.status,
+    source: t.source,
+    grammar: t.grammar,
+    root: t.root,
+    rootIast: t.rootIast,
+    partOfSpeech: t.partOfSpeech
+  }));
 
   const chosenTranslatedText =
     targetLang === 'hindi'
-      ? finalHindi
+      ? doc.translations.hindi
       : targetLang === 'marathi'
-      ? finalMarathi
-      : finalEnglish;
+      ? doc.translations.marathi
+      : doc.translations.english;
+
+  const multiLineIast = doc.lines.map((l) => l.sourceIast).filter(Boolean).join('\n');
 
   return {
-    sourceText: trimmed,
+    sourceText: doc.rawText,
     sourceIast: multiLineIast,
     targetLanguage: targetLang,
     translatedText: chosenTranslatedText,
-    translationTier: overallTier,
-    isExactMatch: !!exactBlock || overallTier === 'exact_sentence',
-    entry: exactBlock,
+    translationTier: doc.overallTier,
+    isExactMatch: doc.overallTier === 'exact_sentence',
     allTranslations: {
-      hindi: finalHindi,
-      marathi: finalMarathi,
-      english: finalEnglish
+      hindi: doc.translations.hindi,
+      marathi: doc.translations.marathi,
+      english: doc.translations.english
     },
     lines: lineResults,
-    wordBreakdown: breakdown,
-    context: exactBlock?.context || (overallTier === 'exact_sentence' ? 'Canonical classical verse translation.' : 'Dynamic lexical/literal gloss reconstructed from live dictionary and morphology engine.'),
-    category: exactBlock?.category || 'Dynamic Input',
-    unknownCount,
-    totalWordCount: breakdown.length
+    wordBreakdown,
+    context: doc.context || (doc.overallTier === 'exact_sentence' ? 'Canonical classical verse translation.' : 'Dynamic lexical/literal gloss reconstructed from live dictionary and morphology engine.'),
+    category: doc.category || 'Dynamic Workspace Input',
+    unknownCount: doc.unknownCount,
+    totalWordCount: doc.totalWords
   };
 }

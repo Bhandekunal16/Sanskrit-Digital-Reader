@@ -130,8 +130,12 @@ graph TD
     │   └── passages.ts        # Tokenized classical literature passages
     └── lib/                   # Core deterministic linguistic algorithms
         ├── router.tsx         # Link, usePathname, useRouter, RouterProvider
+        ├── sanskrit-context.tsx # Centralized Sanskrit workspace store & state synchronization
+        ├── sanskrit-analysis.ts # Shared Sanskrit document model, parser, & in-memory caching
+        ├── sanskrit-tokenizer.ts # Multi-line Sanskrit tokenization & inflectional stem heuristics
+        ├── sandhi.ts          # Pāṇinian Sandhi segmentation & compound analysis
         ├── phonology.ts       # Real-time phoneme segmentation & articulation analyzer
-        ├── dictionary.ts      # Search, normalization, & Levenshtein fuzzy ranking
+        ├── dictionary.ts      # Search, normalization, caching, & Levenshtein fuzzy ranking
         ├── transliteration.ts # Bidirectional Devanagari ⇄ IAST rule engine
         └── translation.ts     # Multilingual gloss & sentence matching
 ```

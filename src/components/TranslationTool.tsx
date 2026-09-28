@@ -1,16 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { translateSanskrit, TargetLanguage, TranslationResultOutput } from '../lib/translation';
-import { SANSKRIT_TRANSLATIONS } from '../data/translations';
+import { useSanskritWorkspace } from '../lib/sanskrit-context';
+import { TargetLanguage } from '../lib/translation';
 import { LanguageSelector } from './LanguageSelector';
 import { TranslationResult } from './TranslationResult';
 import { 
-  Languages, 
   CornerDownLeft, 
   RotateCcw, 
-  Sparkles, 
   Cpu, 
-  ArrowRight,
+  Sparkles,
   BookOpen,
+  ArrowRight,
   Layers,
   Search,
   Loader2
@@ -21,27 +20,45 @@ interface TranslationToolProps {
 }
 
 export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick }) => {
+  const {
+    inputText,
+    setInputText,
+    targetLanguage,
+    setTargetLanguage,
+    loadSample,
+    resetWorkspace,
+    isProcessing,
+    setSelectedTokenBySurface
+  } = useSanskritWorkspace();
+
+  const [localText, setLocalText] = useState(inputText);
+
+  // Sync local text when global workspace changes
+  React.useEffect(() => {
+    setLocalText(inputText);
+  }, [inputText]);
+
   const sampleSentences = useMemo(() => {
     return [
       {
+        id: 'vidya-subhashita',
+        label: 'विद्या ददाति विनयम् (२ पंक्तियाँ)',
+        text: 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।\nपात्रत्वाद् धनमाप्नोति धनाद् धर्मं ततः सुखम्॥'
+      },
+      {
         id: 'asato-ma',
-        label: 'असतो मा सद्गमय (Multi-line)',
+        label: 'असतो मा सद्गमय (३ पंक्तियाँ)',
         text: 'असतो मा सद्गमय ।\nतमसो मा ज्योतिर्गमय ।\nमृत्योर्मा अमृतं गमय ॥'
       },
       {
-        id: 'vidya-dadati',
-        label: 'विद्या ददाति विनयम्',
-        text: 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।'
-      },
-      {
         id: 'ramah-vanam',
-        label: 'रामः वनं गच्छति (Dynamic)',
+        label: 'रामः वनं गच्छति (सरल संस्कृत)',
         text: 'रामः वनं गच्छति।\nसीता तेन सह गच्छति।'
       },
       {
         id: 'satyameva',
         label: 'सत्यमेव जयते',
-        text: 'सत्यमेव जयते।'
+        text: 'सत्यमेव जयते नानृतम्।'
       },
       {
         id: 'gita-karma',
@@ -51,49 +68,30 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
       {
         id: 'vasudhaiva',
         label: 'वसुधैव कुटुम्बकम्',
-        text: 'वसुधैव कुटुम्बकम्।'
+        text: 'अयं निजः परो वेति गणना लघुचेतसाम्।\nउदारचरितानां तु वसुधैव कुटुम्बकम्॥'
       }
     ];
   }, []);
 
-  const [inputText, setInputText] = useState('विद्या ददाति विनयं विनयाद् याति पात्रताम्।');
-  const [targetLanguage, setTargetLanguage] = useState<TargetLanguage>('hindi');
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [result, setResult] = useState<TranslationResultOutput>(() =>
-    translateSanskrit('विद्या ददाति विनयं विनयाद् याति पात्रताम्।', 'hindi')
-  );
-
-  const handleTranslate = (textToTranslate: string = inputText, lang: TargetLanguage = targetLanguage) => {
-    const trimmed = textToTranslate.trim();
-    if (!trimmed) {
-      setResult(translateSanskrit('', lang));
-      return;
-    }
-
-    setIsTranslating(true);
-    // Instantaneous client-side tokenizer & translation engine calculation
-    setTimeout(() => {
-      const res = translateSanskrit(trimmed, lang);
-      setResult(res);
-      setIsTranslating(false);
-    }, 120);
-  };
-
-  const handleLanguageChange = (lang: TargetLanguage) => {
-    setTargetLanguage(lang);
-    if (inputText.trim()) {
-      handleTranslate(inputText, lang);
-    }
+  const handleApply = (textToApply: string = localText) => {
+    setInputText(textToApply);
   };
 
   const handleSelectSample = (sampleText: string) => {
-    setInputText(sampleText);
-    handleTranslate(sampleText, targetLanguage);
+    setLocalText(sampleText);
+    loadSample(sampleText);
   };
 
   const handleClear = () => {
-    setInputText('');
-    setResult(translateSanskrit('', targetLanguage));
+    setLocalText('');
+    resetWorkspace();
+  };
+
+  const handleWordClick = (word: string) => {
+    setSelectedTokenBySurface(word);
+    if (onWordClick) {
+      onWordClick(word);
+    }
   };
 
   return (
@@ -110,11 +108,11 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
                 Sanskrit Multilingual Translation Engine
               </h2>
               <span className="text-xs font-mono-code text-[#8C4A2F] border-l border-[#D6CEBE] pl-2">
-                Multi-Line & Dynamic Lexical Parser
+                Unified Workspace Pipeline
               </span>
             </div>
             <p className="text-xs text-[#78716C] mt-1">
-              Translates arbitrary Sanskrit sentences, multi-line verses, and single words into Hindi, Marathi, and English using multi-tier sentence and tokenized lexical glossing.
+              Translates arbitrary Sanskrit sentences, multi-line verses, and single words into Hindi, Marathi, and English. Updates synchronized workspace state across reader, phonology, and dictionary.
             </p>
           </div>
 
@@ -125,7 +123,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
             </span>
             <LanguageSelector
               selectedLanguage={targetLanguage}
-              onLanguageChange={handleLanguageChange}
+              onLanguageChange={setTargetLanguage}
             />
           </div>
         </div>
@@ -138,14 +136,15 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
               <span>Sanskrit Input (संस्कृत वाक्य / श्लोक)</span>
             </label>
             <span className="text-xs text-[#A8A29E] font-mono-code">
-              {inputText.length} chars · {inputText.split('\n').filter(Boolean).length || 0} lines
+              {localText.length} chars · {localText.split('\n').filter(Boolean).length || 0} lines
             </span>
           </div>
 
           <div className="relative">
             <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              value={localText}
+              onChange={(e) => setLocalText(e.target.value)}
+              onBlur={() => handleApply(localText)}
               placeholder="संस्कृत वाक्य यहाँ लिखें (Single line or multi-line verses)...&#10;e.g.&#10;असतो मा सद्गमय ।&#10;तमसो मा ज्योतिर्गमय ।"
               rows={5}
               className="w-full p-4 bg-[#FBF9F5] border border-[#E8E1D5] rounded-xl text-lg sm:text-xl font-devanagari text-[#1C1917] resize-y focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/30 focus:border-[#8C4A2F] transition-all leading-relaxed"
@@ -156,7 +155,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex items-center gap-1 text-xs text-[#78716C] hover:text-[#1C1917] transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#F2ECE1] border border-[#E8E1D5]"
+                className="flex items-center gap-1 text-xs text-[#78716C] hover:text-[#1C1917] transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#F2ECE1] border border-[#E8E1D5] cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Clear Input</span>
@@ -164,18 +163,18 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
 
               <button
                 type="button"
-                disabled={isTranslating || !inputText.trim()}
-                onClick={() => handleTranslate(inputText, targetLanguage)}
+                disabled={isProcessing || !localText.trim()}
+                onClick={() => handleApply(localText)}
                 className="px-6 py-2.5 bg-[#8C4A2F] hover:bg-[#723922] disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-xs transition-all flex items-center gap-2 cursor-pointer"
               >
-                {isTranslating ? (
+                {isProcessing ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Translating...</span>
+                    <span>Analyzing...</span>
                   </>
                 ) : (
                   <>
-                    <span>Translate</span>
+                    <span>Translate & Analyze</span>
                     <CornerDownLeft className="w-4 h-4 opacity-80" />
                   </>
                 )}
@@ -187,7 +186,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
           {/* Quick-Select Sample Sentences */}
           <div className="pt-4 border-t border-[#F2EDE2]">
             <span className="text-xs text-[#78716C] block mb-2 font-medium">
-              Try sample classical verses & dynamic sentences:
+              Try benchmark classical verses & multi-line inputs:
             </span>
             <div className="flex flex-wrap gap-2">
               {sampleSentences.map((sample) => (
@@ -195,7 +194,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
                   key={sample.id}
                   type="button"
                   onClick={() => handleSelectSample(sample.text)}
-                  className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari hover:border-[#8C4A2F]/40"
+                  className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari hover:border-[#8C4A2F]/40 cursor-pointer"
                 >
                   {sample.label}
                 </button>
@@ -208,12 +207,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
       </div>
 
       {/* Translation Result Card */}
-      <TranslationResult
-        result={result}
-        targetLanguage={targetLanguage}
-        onLanguageChange={handleLanguageChange}
-        onWordClick={onWordClick}
-      />
+      <TranslationResult onWordClick={handleWordClick} />
 
       {/* Educational Section: The Machine Translation Challenge for Sanskrit */}
       <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 sm:p-8 shadow-xs">
@@ -248,10 +242,10 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
 
           <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
             <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
-              2. Morphological Stem Matching
+              2. Morphological Stem & Sandhi Analysis
             </h4>
             <p className="text-[#78716C] leading-relaxed">
-              Resolves inflected surface word forms (e.g. <em>असतो</em> → <em>असत्</em>, <em>गच्छति</em> → <em>गम्</em>) to find root lemmas in the dictionary dataset.
+              Resolves inflected surface word forms (e.g. <em>असतो</em> → <em>असत्</em>, <em>गच्छति</em> → <em>गम्</em>) and segmented compounds.
             </p>
           </div>
 
@@ -260,7 +254,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
               3. Multi-Lingual Gloss Assembly
             </h4>
             <p className="text-[#78716C] leading-relaxed">
-              Generates synchronized Hindi, Marathi, and English multi-line translations and builds the dynamic token-level lexical table.
+              Generates synchronized Hindi, Marathi, and English multi-line translations and builds the transparent token-level lexical table with exact source confidence.
             </p>
           </div>
 

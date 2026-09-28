@@ -17,11 +17,12 @@ export interface SanskritEntry {
   tenseOrLakara?: 'laṭ (present)' | 'laṅ (imperfect past)' | 'loṭ (imperative)' | 'vidhiliṅ (optative)' | 'lṛṭ (future)' | 'liṭ (perfect)';
   personOrPurusha?: 'prathama (3rd person)' | 'madhyama (2nd person)' | 'uttama (1st person)';
   voiceOrPada?: 'parasmaipada' | 'ātmanepada' | 'ubhayapada';
-  morphology: string; // prakṛti-pratyaya analysis
+  morphology?: string; // prakṛti-pratyaya analysis
   etymology?: string;
-  example: string;
-  exampleIast: string;
-  exampleMeaning: string;
+  example?: string;
+  exampleIast?: string;
+  exampleMeaning?: string;
+  context?: string;
   relatedWords?: string[];
   tags?: string[];
 }
@@ -666,5 +667,97 @@ export const SANSKRIT_DICTIONARY: SanskritEntry[] = [
     exampleMeaning: 'May the Divine protect us together; may He nourish us together; may we work with great vigor together (Taittirīya Upaniṣad).',
     relatedWords: ['सहित (sahita)', 'सहानुभूति (sahānubhūti)', 'सहकार्य (sahakārya)'],
     tags: ['particle', 'upanishads', 'indeclinable']
+  },
+  {
+    id: 'asato',
+    devanagari: 'असतो',
+    iast: 'asato',
+    meaning: 'From falsehood, from the unreal, from untruth (Ablative of Asat)',
+    meaningHindi: 'असत्य से, असत् से, अवास्तविक से',
+    meaningMarathi: 'असत्यापासून, असत्यतेकडून',
+    root: 'अस्',
+    rootIast: 'as',
+    rootMeaning: 'to be, exist',
+    partOfSpeech: 'noun',
+    grammar: 'Ablative singular of असत् (asat) in Sandhi with following mā (पञ्चमी विभक्ति, एकवचन)',
+    tags: ['upanishad', 'philosophy', 'ablative']
+  },
+  {
+    id: 'ma-pronoun',
+    devanagari: 'मा',
+    iast: 'mā',
+    meaning: 'Me, unto me (Enclitic accusative 1st person pronoun)',
+    meaningHindi: 'मुझे, मुझको',
+    meaningMarathi: 'मला',
+    partOfSpeech: 'pronoun',
+    grammar: 'Accusative singular enclitic form of अस्मद् (asmad)',
+    tags: ['pronoun', 'veda']
+  },
+  {
+    id: 'sadgamaya',
+    devanagari: 'सद्गमय',
+    iast: 'sadgamaya',
+    meaning: 'Lead towards the Real and True (Sandhi of sat + gamaya)',
+    meaningHindi: 'सत्य की ओर ले चलो / सन्मार्ग पर अग्रसर करो',
+    meaningMarathi: 'सत्याकडे ने / सन्मार्गावर घेऊन चल',
+    root: 'गम्',
+    rootIast: 'gam',
+    rootMeaning: 'to go, move',
+    partOfSpeech: 'indeclinable',
+    grammar: 'Compound of सत् (sat, truth) in Jhashtva Sandhi + गमय (gamaya, causative imperative 2nd singular)',
+    tags: ['compound', 'upanishad', 'sandhi']
+  },
+  {
+    id: 'tamaso',
+    devanagari: 'तमसो',
+    iast: 'tamaso',
+    meaning: 'From darkness, from ignorance (Ablative singular of tamas in Utva Sandhi)',
+    meaningHindi: 'अंधकार से, अज्ञान से',
+    meaningMarathi: 'अंधाराकडून, अज्ञानातून',
+    root: 'तम्',
+    rootIast: 'tam',
+    partOfSpeech: 'noun',
+    grammar: 'Ablative singular of तमस् (tamas) in Utva Visarga Sandhi (पञ्चमी विभक्ति, एकवचन)',
+    tags: ['upanishad', 'philosophy', 'ablative']
+  },
+  {
+    id: 'jyotirgamaya',
+    devanagari: 'ज्योतिर्गमय',
+    iast: 'jyotirgamaya',
+    meaning: 'Lead towards the Light of supreme consciousness (Sandhi of jyotiḥ + gamaya)',
+    meaningHindi: 'प्रकाश/ज्ञान की ओर ले चलो',
+    meaningMarathi: 'प्रकाशाकडे/ज्ञानाकडे ने',
+    root: 'गम्',
+    rootIast: 'gam',
+    partOfSpeech: 'indeclinable',
+    grammar: 'Compound of ज्योतिः (jyotiḥ, light) in Rutva Sandhi + गमय (gamaya)',
+    tags: ['compound', 'upanishad', 'sandhi']
+  },
+  {
+    id: 'amrtam',
+    devanagari: 'अमृतम्',
+    iast: 'amṛtam',
+    meaning: 'Immortality, nectar of eternal consciousness, liberation',
+    meaningHindi: 'अमरता, मोक्ष, अमरत्व, सुधा',
+    meaningMarathi: 'अमरत्व, मोक्ष, सुधा',
+    root: 'मृ',
+    rootIast: 'mṛ',
+    partOfSpeech: 'noun',
+    grammar: 'Neuter noun, accusative singular (द्वितीया विभक्ति, एकवचन)',
+    tags: ['philosophy', 'upanishad']
+  },
+  {
+    id: 'gamaya',
+    devanagari: 'गमय',
+    iast: 'gamaya',
+    meaning: 'Lead, cause to go, guide, direct (Causative imperative)',
+    meaningHindi: 'ले चलो, पहुँचाओ, मार्ग दिखाओ',
+    meaningMarathi: 'ने, पोहोचव, मार्ग दाखव',
+    root: 'गम्',
+    rootIast: 'gam',
+    rootMeaning: 'to go, walk',
+    partOfSpeech: 'verb',
+    grammar: 'Causative (णिच्) imperative active 2nd person singular (लोट् लकार, मध्यम पुरुष, एकवचन)',
+    tags: ['verb', 'imperative', 'causative']
   }
 ];

@@ -58,8 +58,11 @@ export interface SearchResult {
   query: string;
 }
 
+// In-memory cache for search results
+const SEARCH_CACHE = new Map<string, SearchResult>();
+
 /**
- * Search the dictionary by Devanagari, IAST, or English meaning
+ * Search the dictionary by Devanagari, IAST, English, Hindi, or root dhātu
  */
 export function searchDictionary(rawQuery: string): SearchResult {
   const query = rawQuery.trim();
@@ -70,6 +73,9 @@ export function searchDictionary(rawQuery: string): SearchResult {
       query: ''
     };
   }
+
+  const cached = SEARCH_CACHE.get(query.toLowerCase());
+  if (cached) return cached;
 
   const queryLower = query.toLowerCase();
   const queryNorm = normalizeIast(query);
@@ -95,8 +101,14 @@ export function searchDictionary(rawQuery: string): SearchResult {
     if (entry.iast.toLowerCase().includes(queryLower)) return true;
     if (normalizeIast(entry.iast).includes(queryNorm)) return true;
 
-    // Check Meaning
+    // Check Meaning English
     if (entry.meaning.toLowerCase().includes(queryLower)) return true;
+
+    // Check Meaning Hindi
+    if (entry.meaningHindi && entry.meaningHindi.includes(query)) return true;
+
+    // Check Meaning Marathi
+    if (entry.meaningMarathi && entry.meaningMarathi.includes(query)) return true;
 
     // Check Root
     if (entry.root && entry.root.includes(query)) return true;
@@ -122,20 +134,29 @@ export function searchDictionary(rawQuery: string): SearchResult {
     suggestions = scored.slice(0, 4).map(s => s.entry);
   }
 
-  return {
+  const result: SearchResult = {
     exactMatch,
     matches,
     suggestions,
     query
   };
+
+  if (SEARCH_CACHE.size > 200) {
+    const first = SEARCH_CACHE.keys().next().value;
+    if (first) SEARCH_CACHE.delete(first);
+  }
+  SEARCH_CACHE.set(query.toLowerCase(), result);
+
+  return result;
 }
 
 /**
  * Get word entry by ID or Devanagari
  */
 export function getEntryByDevanagari(devanagari: string): SanskritEntry | undefined {
+  const clean = devanagari.replace(/[।॥.,;!?:()\[\]\-\s]/g, '').trim();
   return SANSKRIT_DICTIONARY.find(
-    e => e.devanagari === devanagari || e.devanagari.replace(/[ःम्]$/, '') === devanagari.replace(/[ःम्]$/, '')
+    e => e.devanagari === clean || e.devanagari.replace(/[ःम्]$/, '') === clean.replace(/[ःम्]$/, '')
   );
 }
 
@@ -151,4 +172,3 @@ export function getAllTags(): string[] {
 export function getFeaturedWords(limit = 8): SanskritEntry[] {
   return SANSKRIT_DICTIONARY.slice(0, limit);
 }
-
