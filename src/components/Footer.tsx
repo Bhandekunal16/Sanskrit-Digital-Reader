@@ -1,27 +1,24 @@
 import React from 'react';
+import { Link } from '../lib/router';
 import { BookOpen, Sparkles, Heart } from 'lucide-react';
 
-interface FooterProps {
-  onNavigate: (tab: string) => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#FAF7F2] border-t border-[#E8E1D5] py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
         
         {/* Brand Column */}
         <div className="max-w-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 rounded bg-[#2C241E] text-white flex items-center justify-center font-devanagari font-bold text-xs">
+          <Link href="/" className="flex items-center gap-2 mb-2 group">
+            <div className="w-6 h-6 rounded bg-[#2C241E] text-white flex items-center justify-center font-devanagari font-bold text-xs group-hover:bg-[#8C4A2F] transition-colors">
               सं
             </div>
             <span className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
               Sanskrit Digital Reader
             </span>
-          </div>
+          </Link>
           <p className="text-xs text-[#78716C] leading-relaxed">
-            An open educational computational linguistics interface demonstrating digital dictionaries, transliteration, morphological parsing, and manuscript preservation.
+            An open educational computational linguistics interface demonstrating digital dictionaries, transliteration, morphological parsing, multilingual translation, and manuscript preservation.
           </p>
           <div className="mt-4 text-[11px] text-[#A8A29E] font-mono-code">
             Pāṇinian Grammar & IAST Standardization
@@ -36,37 +33,47 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </span>
             <ul className="space-y-1.5 text-[#57534E]">
               <li>
-                <button onClick={() => onNavigate('dictionary')} className="hover:text-[#1C1917] transition-colors">
+                <Link href="/" className="hover:text-[#1C1917] transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/dictionary" className="hover:text-[#1C1917] transition-colors">
                   Digital Lexicon
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onNavigate('reader')} className="hover:text-[#1C1917] transition-colors">
-                  Sanskrit Reader
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('transliteration')} className="hover:text-[#1C1917] transition-colors">
+                <Link href="/transliteration" className="hover:text-[#1C1917] transition-colors">
                   Transliteration Engine
-                </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/translation" className="hover:text-[#1C1917] transition-colors">
+                  Multilingual Translation
+                </Link>
+              </li>
+              <li>
+                <Link href="/reader" className="hover:text-[#1C1917] transition-colors">
+                  Sanskrit Reader
+                </Link>
               </li>
             </ul>
           </div>
 
           <div>
             <span className="font-semibold text-[#1C1917] block mb-2 uppercase tracking-wider text-[11px]">
-              Linguistics
+              Linguistics & Heritage
             </span>
             <ul className="space-y-1.5 text-[#57534E]">
               <li>
-                <button onClick={() => onNavigate('technology')} className="hover:text-[#1C1917] transition-colors">
+                <Link href="/technology" className="hover:text-[#1C1917] transition-colors">
                   Language Technology
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onNavigate('about')} className="hover:text-[#1C1917] transition-colors">
+                <Link href="/about" className="hover:text-[#1C1917] transition-colors">
                   Manuscript Preservation
-                </button>
+                </Link>
               </li>
               <li>
                 <span className="text-[#A8A29E]">Cologne Sanskrit Lexicon</span>

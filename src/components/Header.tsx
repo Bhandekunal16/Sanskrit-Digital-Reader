@@ -1,21 +1,63 @@
-import React from 'react';
-import { BookOpen, Sparkles, Search, Languages, ScrollText, Cpu, ArrowRightLeft, Globe } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, usePathname, useRouter } from '../lib/router';
+import { Navigation } from './Navigation';
+import { Search, Menu, X, Globe, BookOpen } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  onSearchClick: () => void;
+  onSearchClick?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearchClick }) => {
+export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Handle escape key to close menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Lock scroll while modal menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleSearchAction = () => {
+    if (onSearchClick) {
+      onSearchClick();
+    } else {
+      router.push('/dictionary');
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#E8E1D5] transition-all">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         
         {/* Zone 1: Single text element wordmark */}
-        <button
-          onClick={() => setActiveTab('dictionary')}
-          className="flex items-center gap-2.5 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F] rounded-md py-1"
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F] rounded-md py-1"
+          aria-label="Sanskrit Digital Reader Home"
         >
           <div className="w-8 h-8 rounded bg-[#2C241E] text-[#FBF9F5] flex items-center justify-center font-devanagari font-bold text-lg shadow-xs group-hover:bg-[#8C4A2F] transition-colors">
             सं
@@ -23,130 +65,91 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
           <span className="font-serif-editorial text-xl font-semibold tracking-tight text-[#1C1917]">
             Sanskrit Digital Reader
           </span>
-        </button>
+        </Link>
 
-        {/* Zone 2: Navigation Links (Dictionary, Transliteration, Translation, Reader, Language Technology, About) */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#57534E]">
-          <button
-            onClick={() => setActiveTab('dictionary')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'dictionary'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Dictionary
-          </button>
-          <button
-            onClick={() => setActiveTab('transliteration')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'transliteration'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Transliteration
-          </button>
-          <button
-            onClick={() => setActiveTab('translation')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'translation'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Translation
-          </button>
-          <button
-            onClick={() => setActiveTab('reader')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'reader'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Reader
-          </button>
-          <button
-            onClick={() => setActiveTab('technology')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'technology'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Language Technology
-          </button>
-          <button
-            onClick={() => setActiveTab('about')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'about'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            About
-          </button>
-        </nav>
+        {/* Zone 2: Desktop Navigation Links */}
+        <div className="hidden lg:flex items-center">
+          <Navigation layout="desktop" />
+        </div>
 
-        {/* Zone 3: Primary Actions */}
-        <div className="flex items-center gap-3">
+        {/* Zone 3: Primary Actions & Mobile Hamburger */}
+        <div className="flex items-center gap-2.5">
+          
           <button
-            onClick={onSearchClick}
-            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-[#1C1917] bg-[#EFE9DD] hover:bg-[#E5DCF] rounded-lg transition-colors border border-[#DCD3C3] whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+            type="button"
+            onClick={handleSearchAction}
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-[#1C1917] bg-[#EFE9DD] hover:bg-[#E5DCF] rounded-lg transition-colors border border-[#DCD3C3] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
             aria-label="Search Sanskrit lexicon"
           >
             <Search className="w-3.5 h-3.5 text-[#78716C]" />
             <span className="hidden sm:inline">Search Lexicon</span>
           </button>
-          <button
-            onClick={() => setActiveTab('translation')}
-            className="px-3.5 py-1.5 text-xs font-medium text-[#FBF9F5] bg-[#2C241E] hover:bg-[#8C4A2F] rounded-lg transition-colors whitespace-nowrap shadow-xs focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+
+          <Link
+            href="/reader"
+            className="hidden sm:inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-[#FBF9F5] bg-[#2C241E] hover:bg-[#8C4A2F] rounded-lg transition-colors whitespace-nowrap shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
           >
-            Translate
+            Open Reader
+          </Link>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden p-2 text-[#1C1917] hover:bg-[#EFE9DD] rounded-lg border border-[#DCD3C3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5 text-[#8C4A2F]" />
+            ) : (
+              <Menu className="w-5 h-5 text-[#1C1917]" />
+            )}
           </button>
+
         </div>
 
       </div>
 
-      {/* Mobile navigation bar */}
-      <div className="lg:hidden flex items-center justify-around border-t border-[#E8E1D5] bg-[#F7F4EE] px-2 py-2 text-xs font-medium text-[#57534E] overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('dictionary')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'dictionary' ? 'text-[#8C4A2F] font-bold' : ''}`}
+      {/* Mobile Navigation Drawer / Modal Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          id="mobile-navigation-menu"
+          className="fixed inset-0 top-16 z-50 lg:hidden bg-black/30 backdrop-blur-xs flex flex-col"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
-          <BookOpen className="w-4 h-4" />
-          <span>Dictionary</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('transliteration')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'transliteration' ? 'text-[#8C4A2F] font-bold' : ''}`}
-        >
-          <ArrowRightLeft className="w-4 h-4" />
-          <span>Convert</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('translation')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'translation' ? 'text-[#8C4A2F] font-bold' : ''}`}
-        >
-          <Globe className="w-4 h-4" />
-          <span>Translate</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('reader')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'reader' ? 'text-[#8C4A2F] font-bold' : ''}`}
-        >
-          <ScrollText className="w-4 h-4" />
-          <span>Reader</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('technology')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'technology' ? 'text-[#8C4A2F] font-bold' : ''}`}
-        >
-          <Cpu className="w-4 h-4" />
-          <span>Tech</span>
-        </button>
-      </div>
+          <div
+            ref={menuRef}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#FBF9F5] border-b border-[#E8E1D5] shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200"
+          >
+            <div className="p-4 border-b border-[#E8E1D5] bg-[#FAF7F2] flex items-center justify-between">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
+                Navigation Menu
+              </span>
+              <span className="text-xs text-[#78716C] font-mono-code">
+                7 Core Sections
+              </span>
+            </div>
+
+            <Navigation
+              layout="mobile"
+              onItemClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            <div className="p-4 border-t border-[#E8E1D5] bg-[#FAF7F2] space-y-2">
+              <Link
+                href="/reader"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full py-2 px-3 text-xs font-semibold text-center text-white bg-[#2C241E] hover:bg-[#8C4A2F] rounded-lg block transition-colors"
+              >
+                Launch Sanskrit Reader
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,6 +1,6 @@
 # System Architecture
 
-**Sanskrit Digital Reader** is designed as a modular, client-side, zero-latency linguistic exploration platform. It combines a structured data model with deterministic phonetic utilities and an accessible user interface.
+**Sanskrit Digital Reader** is designed as a modular, client-side, zero-latency linguistic exploration platform with full Next.js App Router-compatible navigation. It combines a structured data model with deterministic phonetic utilities and an accessible user interface.
 
 ---
 
@@ -10,45 +10,72 @@
 graph TD
     User([User Interaction]) --> UI[Next.js / React User Interface]
     
-    subgraph UI Layer
-        Header[Header & Navigation]
-        Hero[Hero & Search Input]
-        WordCard[Word Analysis Card]
-        TransTool[Transliteration Engine UI]
-        PassageReader[Interactive Sanskrit Reader]
-        TechSection[Language Technology Hub]
-        PreservationSection[Digital Preservation Hub]
+    subgraph Routing & Navigation Layer
+        Router[Router Provider & History Engine]
+        Header[Unified Header & Mobile Drawer]
+        Nav[Semantic Navigation Component]
     end
     
-    UI --> Header
-    UI --> Hero
-    UI --> WordCard
-    UI --> TransTool
-    UI --> PassageReader
-    UI --> TechSection
-    UI --> PreservationSection
+    UI --> Router
+    Router --> Header
+    Header --> Nav
+    
+    subgraph Page Route Views
+        HomeRoute["/ (Home View)"]
+        DictRoute["/dictionary (Digital Lexicon)"]
+        TranslitRoute["/transliteration (Transliteration Tool)"]
+        TransRoute["/translation (Multilingual Translation)"]
+        ReaderRoute["/reader (Sanskrit Reader)"]
+        TechRoute["/technology (Language Technology Hub)"]
+        AboutRoute["/about (Digital Preservation Hub)"]
+    end
+    
+    Nav --> HomeRoute
+    Nav --> DictRoute
+    Nav --> TranslitRoute
+    Nav --> TransRoute
+    Nav --> ReaderRoute
+    Nav --> TechRoute
+    Nav --> AboutRoute
     
     subgraph Logic & Utility Layer
         SearchEngine[Dictionary Search & Fuzzy Matcher]
         TransEngine[Rule-Based Transliteration Engine]
+        TranslationEngine[Multilingual Translation Engine]
         SpeechSynth[Web Speech API Audio Synthesizer]
     end
     
-    Hero --> SearchEngine
-    WordCard --> SpeechSynth
-    TransTool --> TransEngine
-    PassageReader --> SpeechSynth
+    DictRoute --> SearchEngine
+    TranslitRoute --> TransEngine
+    TransRoute --> TranslationEngine
+    ReaderRoute --> SpeechSynth
     
     subgraph Data Layer
         LexiconDB[(sanskritDictionary.ts)]
+        TranslationDB[(translations.ts)]
         PassageDB[(passages.ts)]
         PhoneticDB[(SANSKRIT_PHONETIC_CHART)]
     end
     
     SearchEngine --> LexiconDB
-    PassageReader --> PassageDB
-    TransTool --> PhoneticDB
+    TranslationEngine --> TranslationDB
+    ReaderRoute --> PassageDB
+    TranslitRoute --> PhoneticDB
 ```
+
+---
+
+## 🗺️ Canonical Route Mapping
+
+| Navigation Label | Canonical URL | Component / View | Active Rule |
+| :--- | :--- | :--- | :--- |
+| **Home** | `/` | Hero + Interactive Feature Hub | Exactly `pathname === '/'` |
+| **Dictionary** | `/dictionary` | `WordAnalysis` + Lexicon Table | `pathname === '/dictionary'` |
+| **Transliteration** | `/transliteration` | `TransliterationTool` | `pathname === '/transliteration'` |
+| **Translation** | `/translation` | `TranslationTool` | `pathname === '/translation'` |
+| **Reader** | `/reader` | `SanskritReader` | `pathname === '/reader'` |
+| **Language Technology** | `/technology` | `TechnologySection` | `pathname === '/technology'` |
+| **About** | `/about` | `DigitalPreservation` | `pathname === '/about'` |
 
 ---
 
@@ -71,31 +98,39 @@ graph TD
 │   ├── ARCHITECTURE.md
 │   ├── DICTIONARY.md
 │   ├── TRANSLITERATION.md
+│   ├── TRANSLATION.md
 │   ├── READER.md
 │   ├── LANGUAGE_TECHNOLOGY.md
 │   ├── DIGITAL_PRESERVATION.md
 │   ├── DATA_STRUCTURE.md
 │   └── CONTRIBUTING.md
 └── src/
-    ├── App.tsx                # Main container & state coordinator
+    ├── App.tsx                # Main container & 7-route page renderer
     ├── index.css              # Global styles & typography definitions
     ├── main.tsx               # Application entry point
     ├── components/            # Reusable UI components
-    │   ├── Header.tsx         # 3-Zone Top Bar navigation
+    │   ├── Header.tsx         # Universal Top Bar & accessible mobile drawer
+    │   ├── Navigation.tsx     # Reusable desktop, mobile, & footer nav items
     │   ├── Hero.tsx           # Hero section & sample word triggers
     │   ├── SearchBox.tsx      # Multi-modal search input with auto-suggest
     │   ├── WordAnalysis.tsx   # Detailed morphological inspection card
     │   ├── TransliterationTool.tsx # Bidirectional script converter
+    │   ├── TranslationTool.tsx # Sanskrit → Hindi, Marathi, English translator
+    │   ├── TranslationResult.tsx # Translation output & comparative table
+    │   ├── LanguageSelector.tsx # Target language switcher
     │   ├── SanskritReader.tsx # Interactive word-by-word passage reader
-    │   ├── TechnologySection.tsx   # Educational computational linguistics guide
+    │   ├── TechnologySection.tsx # Educational computational linguistics guide
     │   ├── DigitalPreservation.tsx # Manuscript preservation overview
-    │   └── Footer.tsx         # Scholarly references & footer links
+    │   └── Footer.tsx         # Scholarly references & footer Link navigation
     ├── data/                  # Static linguistic datasets
     │   ├── sanskritDictionary.ts # Curated 25+ entry Sanskrit lexicon
+    │   ├── translations.ts    # Multilingual translation dataset
     │   └── passages.ts        # Tokenized classical literature passages
     └── lib/                   # Core deterministic algorithms
+        ├── router.tsx         # Link, usePathname, useRouter, RouterProvider
         ├── dictionary.ts      # Search, normalization, & Levenshtein fuzzy ranking
-        └── transliteration.ts # Bidirectional Devanagari ⇄ IAST rule engine
+        ├── transliteration.ts # Bidirectional Devanagari ⇄ IAST rule engine
+        └── translation.ts     # Multilingual gloss & sentence matching
 ```
 
 ---
@@ -104,29 +139,8 @@ graph TD
 
 | Component | Responsibility |
 | :--- | :--- |
-| `App.tsx` | Central state coordinator. Manages the active navigation tab, global search query, selected lexical entry, and filter modes. |
-| `Header.tsx` | Top Bar Contract complying with institutional design guidelines: Single-element brand mark, 5 clean text navigation links, and primary action buttons. |
-| `Hero.tsx` | Editorial landing banner, multi-modal search input, and quick-access sample chips. |
-| `SearchBox.tsx` | Controlled input handling keyboard events, clear actions, and real-time auto-suggest dropdowns. |
-| `WordAnalysis.tsx` | Renders the complete linguistic profile for an active headword (root, grammar, Pāṇinian decomposition, literary usage, audio). |
-| `TransliterationTool.tsx` | Live conversion interface between Devanagari script and IAST romanization, plus the phonetic articulation taxonomy chart. |
-| `SanskritReader.tsx` | Interactive reader rendering tokenized verses where each word triggers a context-aware grammatical breakdown. |
-| `TechnologySection.tsx` | Educational guide detailing the 5 pillars of Sanskrit digital language technology and the 5-stage pipeline. |
-| `DigitalPreservation.tsx` | Archival essay highlighting manuscript scale, digitization challenges, and TEI XML standards. |
-
----
-
-## ⚡ Data Flow and State Management
-
-1. **User Search Action**:
-   - The user enters a string into `SearchBox` (e.g. `"dharma"` or `"धर्मः"`).
-   - `searchDictionary()` normalizes the input using `normalizeIast()`, stripping diacritics to lowercase ASCII.
-   - The algorithm evaluates exact Devanagari matches, exact IAST matches, prefix matches, and semantic English definitions.
-   - If no direct match is found, Levenshtein distance calculations rank the closest entries in `sanskritDictionary.ts` and return them as suggestions.
-2. **Reader Word Inspection**:
-   - The user selects a verse in `SanskritReader`.
-   - The component iterates through `PassageWordToken[][]`, wrapping each lexical token in an accessible `<button>` element.
-   - When clicked, `selectedToken` is updated in local component state, immediately populating the side inspection card.
-3. **Transliteration Processing**:
-   - The user inputs text into `TransliterationTool`.
-   - A `useMemo` hook executes `devanagariToIast()` or `iastToDevanagari()` on each keystroke, achieving instantaneous sub-millisecond conversion.
+| `router.tsx` | Provides client-side history navigation, `Link` component, `usePathname()`, `useRouter()`, and popstate synchronization without full page reloads. |
+| `Navigation.tsx` | Single source of truth for navigation links across Desktop header, Mobile drawer, and Footer. Automatically highlights the active link based on `usePathname()`. |
+| `Header.tsx` | Renders the top bar brand mark, desktop navigation, quick search action, and accessible mobile drawer with Escape listener and scroll lock handling. |
+| `App.tsx` | Routes the main viewport to the active route (`/`, `/dictionary`, `/transliteration`, `/translation`, `/reader`, `/technology`, `/about`). |
+| `Footer.tsx` | Renders persistent copyright and semantic `Link` items for all routes. |

@@ -1,0 +1,119 @@
+import React from 'react';
+import { Link, usePathname, NAV_ITEMS, NavItemConfig } from '../lib/router';
+import { 
+  Home, 
+  BookOpen, 
+  ArrowRightLeft, 
+  Globe, 
+  ScrollText, 
+  Cpu, 
+  Info 
+} from 'lucide-react';
+
+interface NavigationProps {
+  layout?: 'desktop' | 'mobile' | 'footer';
+  onItemClick?: () => void;
+  className?: string;
+}
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  '/': Home,
+  '/dictionary': BookOpen,
+  '/transliteration': ArrowRightLeft,
+  '/translation': Globe,
+  '/reader': ScrollText,
+  '/technology': Cpu,
+  '/about': Info,
+};
+
+export const Navigation: React.FC<NavigationProps> = ({
+  layout = 'desktop',
+  onItemClick,
+  className = '',
+}) => {
+  const currentPathname = usePathname();
+
+  const isRouteActive = (href: string): boolean => {
+    if (href === '/') {
+      return currentPathname === '/';
+    }
+    return currentPathname === href;
+  };
+
+  if (layout === 'mobile') {
+    return (
+      <nav aria-label="Mobile Navigation" className={`flex flex-col space-y-1.5 p-4 ${className}`}>
+        {NAV_ITEMS.map((item: NavItemConfig) => {
+          const active = isRouteActive(item.href);
+          const Icon = ICON_MAP[item.href] || BookOpen;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onItemClick}
+              aria-current={active ? 'page' : undefined}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                active
+                  ? 'bg-[#2C241E] text-white shadow-xs font-semibold'
+                  : 'text-[#57534E] hover:bg-[#F2ECE1] hover:text-[#1C1917]'
+              }`}
+            >
+              <Icon className={`w-4 h-4 ${active ? 'text-[#E2D8C6]' : 'text-[#8C4A2F]'}`} />
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    );
+  }
+
+  if (layout === 'footer') {
+    return (
+      <nav aria-label="Footer Navigation" className={`space-y-1.5 text-xs ${className}`}>
+        {NAV_ITEMS.map((item: NavItemConfig) => {
+          const active = isRouteActive(item.href);
+          return (
+            <div key={item.href}>
+              <Link
+                href={item.href}
+                onClick={onItemClick}
+                aria-current={active ? 'page' : undefined}
+                className={`transition-colors hover:text-[#1C1917] ${
+                  active ? 'text-[#8C4A2F] font-semibold' : 'text-[#57534E]'
+                }`}
+              >
+                {item.name}
+              </Link>
+            </div>
+          );
+        })}
+      </nav>
+    );
+  }
+
+  // Desktop Navigation
+  return (
+    <nav aria-label="Main Navigation" className={`flex items-center gap-5 xl:gap-7 text-sm font-medium text-[#57534E] ${className}`}>
+      {NAV_ITEMS.map((item: NavItemConfig) => {
+        const active = isRouteActive(item.href);
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onItemClick}
+            aria-current={active ? 'page' : undefined}
+            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F] focus-visible:rounded-xs ${
+              active
+                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
+                : 'border-transparent text-[#57534E]'
+            }`}
+          >
+            {item.name}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
