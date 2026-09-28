@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter, NAV_ITEMS } from '../lib/router';
 import { Navigation } from './Navigation';
-import { Search, Menu, X, BookOpen, Sparkles } from 'lucide-react';
+import { Search, Menu, X, BookOpen } from 'lucide-react';
 
 interface HeaderProps {
   onSearchClick?: () => void;
@@ -9,7 +9,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -18,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // Handle escape key to close menu and lock body scroll safely
+  // Handle escape key to close menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isMobileMenuOpen) {
@@ -28,15 +27,9 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
 
     if (isMobileMenuOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      
       return () => {
         document.removeEventListener('keydown', handleKeyDown);
-        document.body.style.overflow = originalOverflow || '';
       };
-    } else {
-      document.body.style.overflow = '';
     }
   }, [isMobileMenuOpen]);
 
@@ -50,10 +43,11 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#E8E1D5] transition-all w-full">
+    <header className="sticky top-0 z-50 bg-[#FBF9F5] border-b border-[#E8E1D5] shadow-xs w-full">
+      {/* Top Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
         
-        {/* Zone 1: Wordmark & Logo (Responsive & Unbreakable on 320px) */}
+        {/* Zone 1: Wordmark & Logo */}
         <div className="flex items-center min-w-0 flex-1 md:flex-initial mr-1 sm:mr-4">
           <Link
             href="/"
@@ -70,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
           </Link>
         </div>
 
-        {/* Zone 2: Desktop Navigation Links (Visible >= 768px breakpoint) */}
+        {/* Zone 2: Desktop Navigation Links (>= 768px) */}
         <div className="hidden md:flex items-center">
           <Navigation layout="desktop" />
         </div>
@@ -97,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
             Reader
           </Link>
 
-          {/* Mobile Hamburger Button (< 768px breakpoint) */}
+          {/* Mobile Hamburger / Close Button (< 768px) */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -117,46 +111,37 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
 
       </div>
 
-      {/* Mobile Navigation Drawer Overlay (< 768px) */}
+      {/* Mobile Menu Panel (Rendered directly in Header DOM flow, 100% immune to containing block traps) */}
       {isMobileMenuOpen && (
         <div 
           id="mobile-navigation-menu"
-          className="fixed inset-0 top-16 z-50 md:hidden bg-black/40 backdrop-blur-xs flex flex-col"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="md:hidden border-t border-[#E8E1D5] bg-[#FBF9F5] shadow-2xl max-h-[calc(100vh-4.5rem)] overflow-y-auto"
         >
-          <div
-            ref={menuRef}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#FBF9F5] border-b border-[#E8E1D5] shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto flex flex-col justify-between"
-          >
-            <div>
-              <div className="px-4 py-3 border-b border-[#E8E1D5] bg-[#FAF7F2] flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
-                  Navigation Menu
-                </span>
-                <span className="text-[11px] text-[#78716C] font-mono-code">
-                  {NAV_ITEMS.length} Modules
-                </span>
-              </div>
+          <div className="px-4 py-3 border-b border-[#E8E1D5] bg-[#FAF7F2] flex items-center justify-between">
+            <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
+              Navigation Menu
+            </span>
+            <span className="text-[11px] text-[#78716C] font-mono-code">
+              {NAV_ITEMS.length} Modules
+            </span>
+          </div>
 
-              {/* Shared Mobile Navigation Links */}
-              <Navigation
-                layout="mobile"
-                onItemClick={() => setIsMobileMenuOpen(false)}
-              />
-            </div>
+          {/* Shared Mobile Navigation Links */}
+          <Navigation
+            layout="mobile"
+            onItemClick={() => setIsMobileMenuOpen(false)}
+          />
 
-            {/* Bottom Quick-Launch in Mobile Drawer */}
-            <div className="p-4 border-t border-[#E8E1D5] bg-[#FAF7F2] space-y-2">
-              <Link
-                href="/reader"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full py-2.5 px-4 text-xs font-semibold text-center text-white bg-[#2C241E] hover:bg-[#8C4A2F] rounded-xl flex items-center justify-center gap-2 transition-colors min-h-[44px]"
-              >
-                <BookOpen className="w-4 h-4 text-[#E2D8C6]" />
-                <span>Open Sanskrit Passage Reader</span>
-              </Link>
-            </div>
+          {/* Bottom Action inside Mobile Menu */}
+          <div className="p-4 border-t border-[#E8E1D5] bg-[#FAF7F2]">
+            <Link
+              href="/reader"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full py-2.5 px-4 text-xs font-semibold text-center text-white bg-[#2C241E] hover:bg-[#8C4A2F] rounded-xl flex items-center justify-center gap-2 transition-colors min-h-[44px]"
+            >
+              <BookOpen className="w-4 h-4 text-[#E2D8C6]" />
+              <span>Open Sanskrit Passage Reader</span>
+            </Link>
           </div>
         </div>
       )}
