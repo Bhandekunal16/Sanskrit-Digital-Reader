@@ -8,6 +8,7 @@ import { RouterProvider, usePathname, useRouter, Link } from './lib/router';
 import { SanskritWorkspaceProvider, useSanskritWorkspace } from './lib/sanskrit-context';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { PlatformOverview } from './components/PlatformOverview';
 import { WordAnalysis } from './components/WordAnalysis';
 import { TransliterationTool } from './components/TransliterationTool';
 import { TranslationTool } from './components/TranslationTool';
@@ -128,112 +129,32 @@ function AppContent() {
               onSelectSampleWord={handleSelectWord}
             />
 
-            {/* Quick Interactive Feature Hub */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            {/* Interactive Platform Overview & Connected Language Technology Hub */}
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-16">
               
-              <div className="mb-8">
-                <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1">
-                  Platform Overview
-                </span>
-                <h2 className="font-serif-editorial text-3xl font-semibold text-[#1C1917]">
-                  Explore Sanskrit Language Technology Modules
-                </h2>
-                <p className="text-sm text-[#78716C] mt-1">
-                  Choose a dedicated module below or use the top navigation to begin.
-                </p>
-              </div>
+              <PlatformOverview onStartReading={() => router.push('/reader')} />
 
-              {/* Module Launch Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                
-                <Link
-                  href="/dictionary"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
-                >
+              {/* Lexical Deep Dive / Word Analysis Panel */}
+              <div className="pt-8 border-t border-[#E8E1D5]">
+                <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
-                      <BookOpen className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
-                      Digital Lexicon
+                    <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1 font-mono-code">
+                      Grammatical Analysis
+                    </span>
+                    <h3 className="font-serif-editorial text-2xl font-semibold text-[#1C1917]">
+                      Detailed Word Inspection
                     </h3>
-                    <p className="text-xs text-[#78716C] mt-1">
-                      Search Sanskrit vocabulary, roots (dhātu), vibhakti cases, and Pāṇinian morphological decomposition.
-                    </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#F2EDE2] flex items-center justify-between text-xs font-medium text-[#8C4A2F]">
-                    <span>Search Words</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/dictionary')}
+                    className="text-xs font-medium text-[#8C4A2F] hover:underline flex items-center gap-1"
+                  >
+                    <span>Full Dictionary</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
 
-                <Link
-                  href="/transliteration"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
-                >
-                  <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
-                      <ArrowRightLeft className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
-                      Transliteration
-                    </h3>
-                    <p className="text-xs text-[#78716C] mt-1">
-                      Convert between Devanagari script and standardized IAST (ISO 15919) with phonotactic precision.
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#F2EDE2] flex items-center justify-between text-xs font-medium text-[#8C4A2F]">
-                    <span>Convert Script</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/translation"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
-                >
-                  <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
-                      Translation
-                    </h3>
-                    <p className="text-xs text-[#78716C] mt-1">
-                      Translate Sanskrit words and sentences into Hindi (हिन्दी), Marathi (मराठी), and English.
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#F2EDE2] flex items-center justify-between text-xs font-medium text-[#8C4A2F]">
-                    <span>Translate Sanskrit</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/reader"
-                  className="p-5 bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl shadow-xs transition-all group flex flex-col justify-between cursor-pointer"
-                >
-                  <div>
-                    <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center mb-3 group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
-                      <ScrollText className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
-                      Sanskrit Reader
-                    </h3>
-                    <p className="text-xs text-[#78716C] mt-1">
-                      Read classical verses with clickable word tokens, Sandhi resolution, and prose order (Anvaya).
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#F2EDE2] flex items-center justify-between text-xs font-medium text-[#8C4A2F]">
-                    <span>Read Verses</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-
-              </div>
-
-              {/* Sample Analysis Highlight */}
-              <div className="space-y-12">
                 <WordAnalysis
                   entry={selectedEntry}
                   notFoundQuery={notFoundQuery}
