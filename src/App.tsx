@@ -372,6 +372,18 @@ function AppContent() {
         {/* ROUTE 6: Language Technology Page (/technology) */}
         {pathname === '/technology' && (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+            <div className="border-b border-[#E8E1D5] pb-6">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1 font-mono-code">
+                Linguistic Computing & Sanskrit Informatics
+              </span>
+              <h1 className="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1C1917]">
+                Sanskrit Language Technology Architecture
+              </h1>
+              <p className="text-sm text-[#78716C] mt-2">
+                Explore how formal Pāṇinian grammar algorithms, finite-state morphology, Unicode standardization, and multilingual translation models unite to power computational Sanskrit tools.
+              </p>
+            </div>
+
             <TechnologySection />
           </div>
         )}
@@ -379,6 +391,18 @@ function AppContent() {
         {/* ROUTE 7: About Page (/about) */}
         {pathname === '/about' && (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+            <div className="border-b border-[#E8E1D5] pb-6">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1 font-mono-code">
+                Digital Humanities & Manuscript Preservation
+              </span>
+              <h1 className="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1C1917]">
+                Digital Preservation & Heritage Informatics
+              </h1>
+              <p className="text-sm text-[#78716C] mt-2">
+                Safeguarding over 30 million uncataloged Sanskrit manuscript folios through digital editions, TEI XML schemas, and open knowledge graphs.
+              </p>
+            </div>
+
             <DigitalPreservation />
           </div>
         )}

@@ -94,15 +94,20 @@ export const SanskritWorkspaceProvider: React.FC<{ children: React.ReactNode }> 
     setInputText('');
   }, [setInputText]);
 
-  // Synchronize URL query params gracefully
+  // Synchronize URL query params gracefully without overwriting route pathname
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
-      const url = new URL(window.location.href);
-      if (selectedToken && selectedToken.clean) {
-        url.searchParams.set('token', selectedToken.clean);
+      const currentPath = window.location.pathname;
+      if (currentPath === '/reader' || currentPath === '/dictionary') {
+        const url = new URL(window.location.href);
+        if (selectedToken && selectedToken.clean) {
+          url.searchParams.set('token', selectedToken.clean);
+        } else {
+          url.searchParams.delete('token');
+        }
+        window.history.replaceState({}, '', url.toString());
       }
-      window.history.replaceState({}, '', url.toString());
     } catch (e) {
       // Ignore URL update errors in sandboxed environments
     }

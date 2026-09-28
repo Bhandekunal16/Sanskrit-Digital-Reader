@@ -11,6 +11,7 @@ export interface SanskritEntry {
   rootClass?: string; // e.g. Bhvādi (1st gaṇa)
   partOfSpeech: 'noun' | 'verb' | 'adjective' | 'indeclinable' | 'pronoun' | 'prefix';
   grammar: string;
+  stem?: string;
   gender?: 'masculine' | 'feminine' | 'neuter' | 'indeclinable';
   number?: 'singular' | 'dual' | 'plural';
   caseOrVibhakti?: 'prathamā (nominative)' | 'dvitīyā (accusative)' | 'tṛtīyā (instrumental)' | 'caturthī (dative)' | 'pañcamī (ablative)' | 'ṣaṣṭhī (genitive)' | 'saptamī (locative)' | 'sambodhana (vocative)';
