@@ -131,14 +131,14 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
               </span>
             </div>
             
-            {/* Dominant Sanskrit Word */}
-            <div className="flex flex-wrap items-baseline gap-3">
-              <h2 className="font-devanagari text-4xl sm:text-5xl font-bold text-[#1C1917] tracking-tight">
+            {/* Dominant Sanskrit Word (Vertical Stack) */}
+            <div className="pt-1">
+              <h2 className="font-devanagari text-4xl sm:text-5xl font-bold text-[#1C1917] tracking-tight leading-none">
                 {notFoundQuery}
               </h2>
-              <span className="font-mono-code text-lg sm:text-xl text-[#8C4A2F] font-medium">
+              <div className="font-mono-code text-lg sm:text-xl text-[#8C4A2F] font-semibold mt-1.5">
                 {iast}
-              </span>
+              </div>
             </div>
 
             {/* Quick Grammar / Status */}
@@ -343,75 +343,68 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
   return (
     <article className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EFE9DD]">
       
-      {/* 1. WORD HEADER: Dominant Devanagari & Quick Linguistic Overview */}
-      <section className="p-6 sm:p-8 bg-gradient-to-b from-[#FDFBF7] to-[#FFFFFF] space-y-4">
+      {/* 1. WORD HEADER: Dominant Devanagari & Vertical Linguistic Hierarchy */}
+      <section className="p-6 sm:p-8 bg-gradient-to-b from-[#FDFBF7] to-[#FFFFFF]">
         
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="space-y-2">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
             
-            {/* Eyebrow / Classification */}
+            {/* Eyebrow */}
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] font-mono-code">
+              <span className="text-xs uppercase tracking-widest font-bold text-[#8C4A2F] font-mono-code bg-[#FAF0E6] px-2.5 py-1 rounded-md border border-[#E8D7C5]">
                 LEXICAL ENTRY
               </span>
-              <span className="text-xs text-[#A8A29E]" aria-hidden="true">·</span>
-              <span className="text-xs font-medium text-[#57534E] capitalize">
-                {entry.partOfSpeech}
+              <span className="text-xs text-[#78716C] font-mono-code capitalize">
+                {entry.partOfSpeech} {entry.gender ? `· ${entry.gender}` : ''}
               </span>
-              {entry.gender && (
-                <>
-                  <span className="text-xs text-[#A8A29E]" aria-hidden="true">·</span>
-                  <span className="text-xs font-medium text-[#57534E] capitalize">
-                    {entry.gender}
-                  </span>
-                </>
-              )}
             </div>
 
-            {/* Dominant Sanskrit Word & Subordinate IAST */}
-            <div className="flex flex-wrap items-baseline gap-3 sm:gap-4">
-              <h1 className="font-devanagari text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1C1917] tracking-tight">
+            {/* Dominant Sanskrit Word (On its own line, prominent) */}
+            <div className="pt-1">
+              <h1 className="font-devanagari text-5xl sm:text-6xl lg:text-7xl font-bold text-[#1C1917] tracking-tight leading-none">
                 {entry.devanagari}
               </h1>
-              <span className="font-mono-code text-xl sm:text-2xl text-[#8C4A2F] font-medium tracking-wide">
+              {/* IAST Transliteration (Subordinate, clearly underneath) */}
+              <div className="font-mono-code text-xl sm:text-2xl text-[#8C4A2F] font-semibold tracking-wide mt-2">
                 {entry.iast}
-              </span>
+              </div>
             </div>
 
-            {/* Quick Grammar Line */}
-            <div className="text-xs sm:text-sm text-[#57534E] font-medium flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="capitalize">{entry.partOfSpeech}</span>
-              {entry.gender && <span>· {entry.gender}</span>}
-              {entry.caseOrVibhakti && <span>· {entry.caseOrVibhakti}</span>}
-              {entry.number && <span>· {entry.number}</span>}
-              {entry.tenseOrLakara && <span>· {entry.tenseOrLakara}</span>}
-              {entry.personOrPurusha && <span>· {entry.personOrPurusha}</span>}
+            {/* Quick Grammar Tagline */}
+            <div className="text-xs sm:text-sm text-[#57534E] font-medium flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
+              <span className="capitalize font-semibold text-[#1C1917]">{entry.partOfSpeech}</span>
+              {entry.gender && <span>· <span className="capitalize">{entry.gender}</span></span>}
+              {entry.stem && <span>· <span>{entry.stem}</span></span>}
+              {entry.caseOrVibhakti && <span>· <span>{entry.caseOrVibhakti}</span></span>}
+              {entry.number && <span>· <span>{entry.number}</span></span>}
+              {entry.tenseOrLakara && <span>· <span>{entry.tenseOrLakara}</span></span>}
+              {entry.personOrPurusha && <span>· <span>{entry.personOrPurusha}</span></span>}
             </div>
 
             {/* Quick Synopsis (Immediate Understanding) */}
             {quickSynopsis && (
-              <p className="text-sm sm:text-base text-[#8C4A2F] font-serif-editorial font-medium pt-1">
+              <p className="text-base sm:text-lg text-[#8C4A2F] font-serif-editorial font-medium pt-1">
                 {quickSynopsis}
               </p>
             )}
 
           </div>
 
-          {/* Action Buttons (Fitts's Law >= 44px touch targets) */}
-          <div className="flex items-center gap-2 shrink-0 self-start">
+          {/* Action Buttons (Generous spacing, >= 44px touch targets) */}
+          <div className="flex items-center gap-2.5 shrink-0 self-start pt-1">
             <button
               type="button"
               onClick={() => handlePronounce(entry.devanagari)}
-              className="min-w-[44px] min-h-[44px] px-3.5 py-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center gap-2 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
-              aria-label="Listen to pronunciation of word"
+              className="min-w-[44px] min-h-[44px] px-4 py-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] bg-white rounded-xl border border-[#E0D8CA] transition-colors cursor-pointer flex items-center justify-center gap-2 text-xs font-semibold shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+              aria-label="Listen to pronunciation of Sanskrit word"
             >
-              <Volume2 className={`w-4 h-4 ${isPlayingAudio ? 'text-[#8C4A2F] animate-pulse' : ''}`} aria-hidden="true" />
+              <Volume2 className={`w-4 h-4 ${isPlayingAudio ? 'text-[#8C4A2F] animate-pulse' : 'text-[#8C4A2F]'}`} aria-hidden="true" />
               <span>Listen</span>
             </button>
             <button
               type="button"
               onClick={handleCopy}
-              className="min-w-[44px] min-h-[44px] px-3.5 py-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center gap-2 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+              className="min-w-[44px] min-h-[44px] px-4 py-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] bg-white rounded-xl border border-[#E0D8CA] transition-colors cursor-pointer flex items-center justify-center gap-2 text-xs font-semibold shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
               aria-label="Copy IAST and complete lexical entry details"
             >
               {copied ? (
@@ -421,7 +414,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4" aria-hidden="true" />
+                  <Copy className="w-4 h-4 text-[#8C4A2F]" aria-hidden="true" />
                   <span>Copy IAST</span>
                 </>
               )}

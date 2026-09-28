@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="sanskritBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337" />
+      <stop offset="50%" stop-color="#781D1D" />
+      <stop offset="100%" stop-color="#450A0A" />
+    </linearGradient>
+    <linearGradient id="sanskritGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB" />
+      <stop offset="35%" stop-color="#FDE68A" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Background Base with warm rounded rect -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#sanskritBg)" stroke="#B45309" stroke-width="1.5" />
+  
+  <!-- Subtle Inner Border -->
+  <rect x="5.5" y="5.5" width="53" height="53" rx="10.5" fill="none" stroke="#FDE68A" stroke-width="0.8" stroke-opacity="0.35" />
+
+  <!-- Devanagari 'सं' (Sanskrit Reader) Glyph with high legibility -->
+  <g filter="url(#softShadow)">
+    <text 
+      x="32" 
+      y="43.5" 
+      text-anchor="middle" 
+      font-family="system-ui, -apple-system, 'Noto Serif Devanagari', 'Mangal', 'Devanagari MT', 'Kohinoor Devanagari', serif" 
+      font-size="33" 
+      font-weight="bold" 
+      fill="url(#sanskritGold)"
+    >सं</text>
+  </g>
+
+  <!-- Manuscript / Palm Leaf Accent Dots -->
+  <circle cx="26" cy="54" r="1.2" fill="#FDE68A" fill-opacity="0.75" />
+  <circle cx="32" cy="54" r="1.6" fill="#FDE68A" fill-opacity="0.95" />
+  <circle cx="38" cy="54" r="1.2" fill="#FDE68A" fill-opacity="0.75" />
+</svg>
