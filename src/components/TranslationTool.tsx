@@ -12,7 +12,8 @@ import {
   ArrowRight,
   BookOpen,
   Layers,
-  Search
+  Search,
+  Loader2
 } from 'lucide-react';
 
 interface TranslationToolProps {
@@ -21,25 +22,61 @@ interface TranslationToolProps {
 
 export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick }) => {
   const sampleSentences = useMemo(() => {
-    return SANSKRIT_TRANSLATIONS.filter(t => t.type === 'sentence' || t.type === 'phrase').map(t => ({
-      id: t.id,
-      label: t.sanskrit.length > 22 ? t.sanskrit.slice(0, 18) + '...' : t.sanskrit,
-      text: t.sanskrit
-    }));
+    return [
+      {
+        id: 'asato-ma',
+        label: 'असतो मा सद्गमय (Multi-line)',
+        text: 'असतो मा सद्गमय ।\nतमसो मा ज्योतिर्गमय ।\nमृत्योर्मा अमृतं गमय ॥'
+      },
+      {
+        id: 'vidya-dadati',
+        label: 'विद्या ददाति विनयम्',
+        text: 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।'
+      },
+      {
+        id: 'ramah-vanam',
+        label: 'रामः वनं गच्छति (Dynamic)',
+        text: 'रामः वनं गच्छति।\nसीता तेन सह गच्छति।'
+      },
+      {
+        id: 'satyameva',
+        label: 'सत्यमेव जयते',
+        text: 'सत्यमेव जयते।'
+      },
+      {
+        id: 'gita-karma',
+        label: 'कर्मण्येवाधिकारस्ते...',
+        text: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।'
+      },
+      {
+        id: 'vasudhaiva',
+        label: 'वसुधैव कुटुम्बकम्',
+        text: 'वसुधैव कुटुम्बकम्।'
+      }
+    ];
   }, []);
 
-  const [inputText, setInputText] = useState(
-    () => sampleSentences[0]?.text || 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।'
-  );
+  const [inputText, setInputText] = useState('विद्या ददाति विनयं विनयाद् याति पात्रताम्।');
   const [targetLanguage, setTargetLanguage] = useState<TargetLanguage>('hindi');
+  const [isTranslating, setIsTranslating] = useState(false);
   const [result, setResult] = useState<TranslationResultOutput>(() =>
-    translateSanskrit(sampleSentences[0]?.text || 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।', 'hindi')
+    translateSanskrit('विद्या ददाति विनयं विनयाद् याति पात्रताम्।', 'hindi')
   );
 
   const handleTranslate = (textToTranslate: string = inputText, lang: TargetLanguage = targetLanguage) => {
-    if (!textToTranslate.trim()) return;
-    const res = translateSanskrit(textToTranslate, lang);
-    setResult(res);
+    const trimmed = textToTranslate.trim();
+    if (!trimmed) {
+      setResult(translateSanskrit('', lang));
+      return;
+    }
+
+    setIsTranslating(true);
+    // Instantaneous client-side tokenizer & translation engine calculation
+    setTimeout(() => {
+      const res = translateSanskrit(trimmed, lang);
+      setResult(res);
+      setIsTranslating(false);
+    }, 120);
   };
 
   const handleLanguageChange = (lang: TargetLanguage) => {
@@ -49,9 +86,14 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
     }
   };
 
-  const handleSelectSample = (sample: string) => {
-    setInputText(sample);
-    handleTranslate(sample, targetLanguage);
+  const handleSelectSample = (sampleText: string) => {
+    setInputText(sampleText);
+    handleTranslate(sampleText, targetLanguage);
+  };
+
+  const handleClear = () => {
+    setInputText('');
+    setResult(translateSanskrit('', targetLanguage));
   };
 
   return (
@@ -65,14 +107,14 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-serif-editorial text-2xl font-semibold text-[#1C1917]">
-                Sanskrit Multilingual Translation
+                Sanskrit Multilingual Translation Engine
               </h2>
               <span className="text-xs font-mono-code text-[#8C4A2F] border-l border-[#D6CEBE] pl-2">
-                Sanskrit → Hindi | Marathi | English
+                Multi-Line & Dynamic Lexical Parser
               </span>
             </div>
             <p className="text-xs text-[#78716C] mt-1">
-              Cross-lingual demonstration translating Sanskrit words, phrases, and classical verses into major Indic languages and English.
+              Translates arbitrary Sanskrit sentences, multi-line verses, and single words into Hindi, Marathi, and English using multi-tier sentence and tokenized lexical glossing.
             </p>
           </div>
 
@@ -93,10 +135,10 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
           
           <div className="flex items-center justify-between mb-1">
             <label className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-              <span>Sanskrit Input (संस्कृत वाक्य)</span>
+              <span>Sanskrit Input (संस्कृत वाक्य / श्लोक)</span>
             </label>
             <span className="text-xs text-[#A8A29E] font-mono-code">
-              {inputText.length} characters
+              {inputText.length} chars · {inputText.split('\n').filter(Boolean).length || 0} lines
             </span>
           </div>
 
@@ -104,29 +146,39 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="संस्कृत वाक्य यहाँ लिखें... e.g. विद्या ददाति विनयम्"
-              rows={4}
-              className="w-full p-4 bg-[#FBF9F5] border border-[#E8E1D5] rounded-xl text-xl sm:text-2xl font-devanagari text-[#1C1917] resize-none focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/30 focus:border-[#8C4A2F] transition-all"
+              placeholder="संस्कृत वाक्य यहाँ लिखें (Single line or multi-line verses)...&#10;e.g.&#10;असतो मा सद्गमय ।&#10;तमसो मा ज्योतिर्गमय ।"
+              rows={5}
+              className="w-full p-4 bg-[#FBF9F5] border border-[#E8E1D5] rounded-xl text-lg sm:text-xl font-devanagari text-[#1C1917] resize-y focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/30 focus:border-[#8C4A2F] transition-all leading-relaxed"
             />
 
-            <div className="flex items-center justify-between mt-3">
+            <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
               
               <button
                 type="button"
-                onClick={() => setInputText('')}
-                className="flex items-center gap-1 text-xs text-[#78716C] hover:text-[#1C1917] transition-colors py-1 px-2 rounded hover:bg-[#F2ECE1]"
+                onClick={handleClear}
+                className="flex items-center gap-1 text-xs text-[#78716C] hover:text-[#1C1917] transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#F2ECE1] border border-[#E8E1D5]"
               >
-                <RotateCcw className="w-3 h-3" />
+                <RotateCcw className="w-3.5 h-3.5" />
                 <span>Clear Input</span>
               </button>
 
               <button
                 type="button"
+                disabled={isTranslating || !inputText.trim()}
                 onClick={() => handleTranslate(inputText, targetLanguage)}
-                className="px-5 py-2.5 bg-[#8C4A2F] hover:bg-[#723922] text-white rounded-xl text-sm font-medium shadow-xs transition-colors flex items-center gap-2"
+                className="px-6 py-2.5 bg-[#8C4A2F] hover:bg-[#723922] disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-xs transition-all flex items-center gap-2 cursor-pointer"
               >
-                <span>Translate</span>
-                <CornerDownLeft className="w-4 h-4 opacity-80" />
+                {isTranslating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Translating...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Translate</span>
+                    <CornerDownLeft className="w-4 h-4 opacity-80" />
+                  </>
+                )}
               </button>
 
             </div>
@@ -135,12 +187,12 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
           {/* Quick-Select Sample Sentences */}
           <div className="pt-4 border-t border-[#F2EDE2]">
             <span className="text-xs text-[#78716C] block mb-2 font-medium">
-              Try representative classical sentences:
+              Try sample classical verses & dynamic sentences:
             </span>
             <div className="flex flex-wrap gap-2">
-              {sampleSentences.map((sample, idx) => (
+              {sampleSentences.map((sample) => (
                 <button
-                  key={idx}
+                  key={sample.id}
                   type="button"
                   onClick={() => handleSelectSample(sample.text)}
                   className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari hover:border-[#8C4A2F]/40"
@@ -171,51 +223,47 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
           </div>
           <div>
             <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1917]">
-              Sanskrit Machine Translation: Computational Dimensions
+              Sanskrit Machine Translation Pipeline Architecture
             </h3>
             <p className="text-xs text-[#78716C]">
-              Why automated Sanskrit translation requires a specialized multi-stage NLP pipeline.
+              How the multi-tier engine processes user input from tokenization to lexical glossing.
             </p>
           </div>
         </div>
 
         <p className="text-sm text-[#57534E] leading-relaxed mb-6">
-          Automated translation between Sanskrit and modern Indo-Aryan languages (Hindi, Marathi) or English presents unique computational linguistics challenges. Because Sanskrit words are highly inflected and concatenated through Sandhi, a successful Machine Translation (MT) pipeline must resolve several linguistic layers:
+          Automated translation between Sanskrit and modern Indo-Aryan languages (Hindi, Marathi) or English operates through a tiered computational linguistics pipeline:
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           
           <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
             <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
-              1. Sandhi & Tokenization
+              1. Multi-Line Tokenization
             </h4>
             <p className="text-[#78716C] leading-relaxed">
-              Splitting continuous Sanskrit compounds into discrete grammatical words before semantic lookup is possible (e.g. <em>विद्याददाति</em> → <em>विद्या + ददाति</em>).
+              Splits arbitrary user text into structured line arrays, preserves verse meter, separates punctuation (`।`, `॥`), and normalizes combining diacritics.
             </p>
           </div>
 
           <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
             <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
-              2. Kāraka & Syntactic Parsing
+              2. Morphological Stem Matching
             </h4>
             <p className="text-[#78716C] leading-relaxed">
-              Mapping non-fixed Sanskrit word order (free word order) into target language subject-verb-object structures (Hindi/Marathi SOV or English SVO).
+              Resolves inflected surface word forms (e.g. <em>असतो</em> → <em>असत्</em>, <em>गच्छति</em> → <em>गम्</em>) to find root lemmas in the dictionary dataset.
             </p>
           </div>
 
           <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
             <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
-              3. Word Sense Disambiguation
+              3. Multi-Lingual Gloss Assembly
             </h4>
             <p className="text-[#78716C] leading-relaxed">
-              Disambiguating polysemous Sanskrit roots (e.g. <em>धर्म</em> as duty, religion, cosmic order, or intrinsic virtue) based on literary context.
+              Generates synchronized Hindi, Marathi, and English multi-line translations and builds the dynamic token-level lexical table.
             </p>
           </div>
 
-        </div>
-
-        <div className="mt-4 pt-3 border-t border-[#F2EDE2] text-[11px] text-[#A8A29E] font-mono-code">
-          * Notice: The above translation engine is an educational baseline demonstration powered by structured lexical pairs and rule-based glosses.
         </div>
       </div>
 

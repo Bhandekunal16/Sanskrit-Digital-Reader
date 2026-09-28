@@ -18,13 +18,17 @@ The **Translation Module** enables cross-lingual access to classical and contemp
 
 ```mermaid
 graph LR
-    A[Sanskrit Input: Devanagari / IAST] --> B[Language Selector: Hindi | Marathi | English]
-    B --> C[Lexical & Sentence Matching Engine]
-    C --> D{Exact Match in Dataset?}
-    D -- Yes --> E[Curated Translation Retrieval]
-    D -- No --> F[Tokenization & Morphological Gloss Assembler]
-    E --> G[Translation Result Card & Multi-Lingual Compare]
-    F --> G
+    A[Arbitrary Sanskrit Input: Single / Multi-line] --> B[Sanskrit Normalizer & Tokenizer]
+    B --> C[Line Structure Preservation & Token Decomposition]
+    C --> D[Morphological Stem & Dictionary Matcher]
+    D --> E{Tier 1: Stored Sentence Match?}
+    E -- Yes --> F[Canonical Literary Translation]
+    E -- No --> G{Tier 2: Phrase Match?}
+    G -- Yes --> H[Composed Phrase Translation]
+    G -- No --> I[Tier 3: Dynamic Lexical / Literal Gloss Assembly]
+    F --> J[Multi-Line Translation Cards & Word Breakdown]
+    H --> J
+    I --> J
 ```
 
 ---
