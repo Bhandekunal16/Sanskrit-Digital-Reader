@@ -1,0 +1,6 @@
+{
+  "name": "Sanskrit Digital Reader",
+  "description": "Explore Sanskrit through digital language technology, interactive dictionary analysis, morphological parsing, reader tools, and transliteration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
