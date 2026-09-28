@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SanskritEntry } from '../data/sanskritDictionary';
+import { analyzeSanskritPhonology } from '../lib/phonology';
 import { 
   Volume2, 
   Copy, 
@@ -10,7 +11,8 @@ import {
   FileText, 
   Sparkles,
   Search,
-  ExternalLink
+  ExternalLink,
+  Activity
 } from 'lucide-react';
 
 interface WordAnalysisProps {
@@ -30,6 +32,12 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+
+  // Dynamically compute phoneme decomposition and articulation points
+  const phonologyAnalysis = useMemo(() => {
+    if (!entry) return null;
+    return analyzeSanskritPhonology(entry.devanagari);
+  }, [entry]);
 
   const handleCopy = () => {
     if (!entry) return;
@@ -275,6 +283,55 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
             </p>
           )}
         </div>
+
+        {/* Dynamic Computed Phonological Analysis (वर्ण-स्थान-विभागः) */}
+        {phonologyAnalysis && phonologyAnalysis.phonemes.length > 0 && (
+          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5 text-[#8C4A2F]" />
+                <span>Computed Phonological Articulation (उच्चारण-स्थान-विभागः)</span>
+              </span>
+              <span className="text-[11px] font-mono-code text-[#78716C]">
+                {phonologyAnalysis.vowelCount} vowels · {phonologyAnalysis.consonantCount} consonants · {phonologyAnalysis.modifierCount} modifiers
+              </span>
+            </div>
+
+            {/* Phoneme Token Sequence */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {phonologyAnalysis.phonemes.map((tok, idx) => (
+                <div
+                  key={idx}
+                  className="p-2.5 bg-white border border-[#E0D8CA] rounded-lg shadow-2xs flex flex-col justify-between"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-devanagari font-bold text-lg text-[#1C1917]">
+                      {tok.grapheme}
+                    </span>
+                    <span className="font-mono-code text-xs text-[#8C4A2F]">
+                      {tok.iast}
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-medium text-[#78716C] mt-0.5">
+                    {tok.groupName}
+                  </div>
+                  <div className="text-[9px] text-[#A8A29E] mt-0.5">
+                    {tok.placeOfArticulation.split('/')[0]}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-2.5 pt-2 border-t border-[#EFE9DD] flex flex-wrap gap-2 text-[11px] text-[#78716C]">
+              <span>Articulation Sthānas present:</span>
+              {phonologyAnalysis.uniquePlaces.map((pl, i) => (
+                <span key={i} className="font-medium text-[#1C1917]">
+                  {pl}{i < phonologyAnalysis.uniquePlaces.length - 1 ? ' · ' : ''}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Example in Sanskrit Literature */}
         <div className="p-5 bg-[#FBF9F5] border-l-4 border-l-[#8C4A2F] border border-[#EAE3D6] rounded-r-xl">

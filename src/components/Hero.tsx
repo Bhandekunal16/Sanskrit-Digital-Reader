@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SearchBox } from './SearchBox';
 import { SanskritEntry } from '../data/sanskritDictionary';
+import { getFeaturedWords } from '../lib/dictionary';
 import { Sparkles, BookOpen, ArrowRight, Compass } from 'lucide-react';
 
 interface HeroProps {
@@ -18,16 +19,7 @@ export const Hero: React.FC<HeroProps> = ({
   onSelectEntry,
   onSelectSampleWord
 }) => {
-  const sampleWords = [
-    { dev: 'धर्मः', iast: 'dharmaḥ', label: 'Righteousness / Duty' },
-    { dev: 'संस्कृतम्', iast: 'saṃskṛtam', label: 'Refined / Sanskrit' },
-    { dev: 'ज्ञानम्', iast: 'jñānam', label: 'Knowledge / Wisdom' },
-    { dev: 'गच्छति', iast: 'gacchati', label: 'Goes / Moves' },
-    { dev: 'रामः', iast: 'rāmaḥ', label: 'Delightful / Rama' },
-    { dev: 'सत्यम्', iast: 'satyam', label: 'Truth / Reality' },
-    { dev: 'अहिंसा', iast: 'ahiṃsā', label: 'Non-violence' },
-    { dev: 'शान्तिः', iast: 'śāntiḥ', label: 'Peace / Calm' }
-  ];
+  const sampleWords = useMemo(() => getFeaturedWords(8), []);
 
   return (
     <section className="relative pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-[#E8E1D5]">
@@ -71,15 +63,15 @@ export const Hero: React.FC<HeroProps> = ({
             Or select an example word to inspect:
           </span>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {sampleWords.map((item, idx) => (
+            {sampleWords.map((item) => (
               <button
-                key={idx}
+                key={item.id}
                 type="button"
-                onClick={() => onSelectSampleWord(item.dev)}
+                onClick={() => onSelectSampleWord(item.devanagari)}
                 className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F2ECE1] text-[#1C1917] border border-[#E0D8CA] rounded-lg text-sm font-medium transition-all shadow-2xs hover:border-[#8C4A2F]/40 flex items-baseline gap-1.5 group"
               >
                 <span className="font-devanagari font-bold text-base text-[#1C1917] group-hover:text-[#8C4A2F] transition-colors">
-                  {item.dev}
+                  {item.devanagari}
                 </span>
                 <span className="text-xs font-mono-code text-[#78716C]">
                   {item.iast}

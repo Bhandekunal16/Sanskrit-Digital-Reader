@@ -114,6 +114,7 @@ graph TD
     │   ├── Hero.tsx           # Hero section & sample word triggers
     │   ├── SearchBox.tsx      # Multi-modal search input with auto-suggest
     │   ├── WordAnalysis.tsx   # Detailed morphological inspection card
+    │   ├── PhonologicalMap.tsx # Dynamic Sanskrit articulation matrix (उच्चारण-स्थानम्)
     │   ├── TransliterationTool.tsx # Bidirectional script converter
     │   ├── TranslationTool.tsx # Sanskrit → Hindi, Marathi, English translator
     │   ├── TranslationResult.tsx # Translation output & comparative table
@@ -122,12 +123,14 @@ graph TD
     │   ├── TechnologySection.tsx # Educational computational linguistics guide
     │   ├── DigitalPreservation.tsx # Manuscript preservation overview
     │   └── Footer.tsx         # Scholarly references & footer Link navigation
-    ├── data/                  # Static linguistic datasets
-    │   ├── sanskritDictionary.ts # Curated 25+ entry Sanskrit lexicon
+    ├── data/                  # Shared linguistic datasets (Single Source of Truth)
+    │   ├── phonology.ts       # Central phoneme & articulation group database
+    │   ├── sanskritDictionary.ts # Curated Sanskrit lexicon
     │   ├── translations.ts    # Multilingual translation dataset
     │   └── passages.ts        # Tokenized classical literature passages
-    └── lib/                   # Core deterministic algorithms
+    └── lib/                   # Core deterministic linguistic algorithms
         ├── router.tsx         # Link, usePathname, useRouter, RouterProvider
+        ├── phonology.ts       # Real-time phoneme segmentation & articulation analyzer
         ├── dictionary.ts      # Search, normalization, & Levenshtein fuzzy ranking
         ├── transliteration.ts # Bidirectional Devanagari ⇄ IAST rule engine
         └── translation.ts     # Multilingual gloss & sentence matching

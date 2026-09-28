@@ -1,39 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   devanagariToIast, 
-  iastToDevanagari, 
-  SANSKRIT_PHONETIC_CHART 
+  iastToDevanagari 
 } from '../lib/transliteration';
+import { getFeaturedWords } from '../lib/dictionary';
+import { PhonologicalMap } from './PhonologicalMap';
 import { 
   Copy, 
   Check, 
   ArrowRightLeft, 
   RotateCcw, 
   Sparkles, 
-  Info,
-  BookOpen,
-  Volume2
+  Info, 
+  BookOpen, 
+  Volume2 
 } from 'lucide-react';
 
-export const TransliterationTool: React.FC = () => {
+interface TransliterationToolProps {
+  onSelectWord?: (word: string) => void;
+}
+
+export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSelectWord }) => {
   const [mode, setMode] = useState<'dev2iast' | 'iast2dev'>('dev2iast');
   const [inputText, setInputText] = useState('धर्मः');
   const [copied, setCopied] = useState(false);
   const [showChart, setShowChart] = useState(true);
 
-  const sampleDevanagariWords = [
-    { dev: 'धर्मः', iast: 'dharmaḥ' },
-    { dev: 'रामः', iast: 'rāmaḥ' },
-    { dev: 'कृष्णः', iast: 'kṛṣṇaḥ' },
-    { dev: 'योगः', iast: 'yogaḥ' },
-    { dev: 'ज्ञानम्', iast: 'jñānam' },
-    { dev: 'संस्कृतम्', iast: 'saṃskṛtam' },
-    { dev: 'विद्या', iast: 'vidyā' },
-    { dev: 'शान्तिः', iast: 'śāntiḥ' }
-  ];
+  const sampleWords = useMemo(() => getFeaturedWords(8), []);
 
   // Perform active transliteration
-  const outputText = React.useMemo(() => {
+  const outputText = useMemo(() => {
     if (mode === 'dev2iast') {
       return devanagariToIast(inputText);
     } else {
@@ -59,6 +55,14 @@ export const TransliterationTool: React.FC = () => {
       utterance.lang = 'hi-IN';
       utterance.rate = 0.85;
       window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const handleSelectSample = (dev: string, iast: string) => {
+    if (mode === 'dev2iast') {
+      setInputText(dev);
+    } else {
+      setInputText(iast);
     }
   };
 
@@ -131,20 +135,20 @@ export const TransliterationTool: React.FC = () => {
               />
             </div>
 
-            {/* Quick Sample Words */}
+            {/* Quick Sample Words from Shared Dictionary */}
             <div className="mt-4 pt-4 border-t border-[#F2EDE2]">
               <span className="text-xs text-[#78716C] block mb-2 font-medium">
                 Try standard benchmark words:
               </span>
               <div className="flex flex-wrap gap-1.5">
-                {sampleDevanagariWords.map((sample, idx) => (
+                {sampleWords.map((sample) => (
                   <button
-                    key={idx}
+                    key={sample.id}
                     type="button"
-                    onClick={() => setInputText(mode === 'dev2iast' ? sample.dev : sample.iast)}
+                    onClick={() => handleSelectSample(sample.devanagari, sample.iast)}
                     className="px-2.5 py-1 bg-[#FAF7F2] hover:bg-[#F0EAE0] border border-[#E5DECF] rounded text-xs transition-colors text-[#1C1917] font-medium"
                   >
-                    <span className="font-devanagari">{sample.dev}</span>
+                    <span className="font-devanagari">{sample.devanagari}</span>
                     <span className="text-[#A8A29E] ml-1 font-mono-code">→ {sample.iast}</span>
                   </button>
                 ))}
@@ -216,66 +220,36 @@ export const TransliterationTool: React.FC = () => {
 
         </div>
 
-        {/* Engine Disclaimer Banner */}
+        {/* Engine Toggle Banner */}
         <div className="px-6 py-3 bg-[#F5EFEB] border-t border-[#EAE3D6] text-xs text-[#78716C] flex items-center justify-between">
           <span>
-            <strong>Demo Engine Notice:</strong> This is an educational client-side transliteration implementation designed for classical Sanskrit phonotactics.
+            <strong>Interactive Phonological Map:</strong> Linked to the central Sanskrit linguistic data model.
           </span>
           <button
             onClick={() => setShowChart(!showChart)}
             className="text-[#8C4A2F] hover:underline font-medium text-xs ml-2 whitespace-nowrap"
           >
-            {showChart ? 'Hide Phonetic Chart' : 'Show Sanskrit Phonetic Chart'}
+            {showChart ? 'Hide Phonological Map' : 'Show Sanskrit Phonological Map'}
           </button>
         </div>
 
       </div>
 
-      {/* Sanskrit Phonetic Chart / Sthāna Taxonomy */}
+      {/* Dynamic Phonological Map Module */}
       {showChart && (
-        <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 sm:p-8 shadow-xs">
-          <div className="mb-6">
-            <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1917]">
-              Sanskrit Phonological Map (उच्चारण-स्थानम्)
-            </h3>
-            <p className="text-xs text-[#78716C] mt-1">
-              Traditional Pāṇinian taxonomy categorizes all Sanskrit phonemes by physiological place of articulation (Sthāna) and internal effort (Ābhyantara Prayatna).
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {SANSKRIT_PHONETIC_CHART.map((cat, idx) => (
-              <div key={idx} className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl flex flex-col justify-between">
-                <div>
-                  <h4 className="font-semibold text-sm text-[#1C1917]">
-                    {cat.title}
-                  </h4>
-                  <div className="text-xs font-devanagari text-[#8C4A2F] font-medium">
-                    {cat.sanskritName}
-                  </div>
-                  <div className="text-[11px] text-[#A8A29E] mt-0.5">
-                    {cat.organ}
-                  </div>
-
-                  <div className="mt-3 space-y-2 border-t border-[#EFE9DD] pt-2">
-                    {cat.items.map((item, i) => (
-                      <div key={i} className="text-xs flex items-center justify-between">
-                        <span className="font-devanagari font-bold text-[#1C1917]">
-                          {item.devanagari}
-                        </span>
-                        <span className="font-mono-code text-[#78716C] text-[11px]">
-                          {item.iast}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <PhonologicalMap
+          initialWord={mode === 'dev2iast' ? inputText : outputText || 'धर्मः'}
+          onSelectWord={(word) => {
+            if (onSelectWord) {
+              onSelectWord(word);
+            } else {
+              setInputText(mode === 'dev2iast' ? word : devanagariToIast(word));
+            }
+          }}
+        />
       )}
 
     </div>
   );
 };
+

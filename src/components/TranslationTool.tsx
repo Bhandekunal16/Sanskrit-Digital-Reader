@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { translateSanskrit, TargetLanguage, TranslationResultOutput } from '../lib/translation';
+import { SANSKRIT_TRANSLATIONS } from '../data/translations';
 import { LanguageSelector } from './LanguageSelector';
 import { TranslationResult } from './TranslationResult';
 import { 
@@ -19,21 +20,21 @@ interface TranslationToolProps {
 }
 
 export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick }) => {
-  const [inputText, setInputText] = useState('विद्या ददाति विनयं विनयाद् याति पात्रताम्।');
+  const sampleSentences = useMemo(() => {
+    return SANSKRIT_TRANSLATIONS.filter(t => t.type === 'sentence' || t.type === 'phrase').map(t => ({
+      id: t.id,
+      label: t.sanskrit.length > 22 ? t.sanskrit.slice(0, 18) + '...' : t.sanskrit,
+      text: t.sanskrit
+    }));
+  }, []);
+
+  const [inputText, setInputText] = useState(
+    () => sampleSentences[0]?.text || 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।'
+  );
   const [targetLanguage, setTargetLanguage] = useState<TargetLanguage>('hindi');
   const [result, setResult] = useState<TranslationResultOutput>(() =>
-    translateSanskrit('विद्या ददाति विनयं विनयाद् याति पात्रताम्।', 'hindi')
+    translateSanskrit(sampleSentences[0]?.text || 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।', 'hindi')
   );
-
-  const sampleSentences = [
-    { label: 'विद्या ददाति...', text: 'विद्या ददाति विनयं विनयाद् याति पात्रताम्।' },
-    { label: 'सत्यमेव जयते', text: 'सत्यमेव जयते।' },
-    { label: 'धर्मो रक्षति...', text: 'धर्मो रक्षति रक्षितः।' },
-    { label: 'कर्मण्येवाधिकारस्ते...', text: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।' },
-    { label: 'वसुधैव कुटुम्बकम्', text: 'वसुधैव कुटुम्बकम्।' },
-    { label: 'अहिंसा परमो धर्मः', text: 'अहिंसा परमो धर्मः।' },
-    { label: 'सर्वे भवन्तु सुखिनः', text: 'सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः।' }
-  ];
 
   const handleTranslate = (textToTranslate: string = inputText, lang: TargetLanguage = targetLanguage) => {
     if (!textToTranslate.trim()) return;

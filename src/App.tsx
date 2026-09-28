@@ -11,6 +11,7 @@ import { WordAnalysis } from './components/WordAnalysis';
 import { TransliterationTool } from './components/TransliterationTool';
 import { TranslationTool } from './components/TranslationTool';
 import { SanskritReader } from './components/SanskritReader';
+import { PhonologicalMap } from './components/PhonologicalMap';
 import { TechnologySection } from './components/TechnologySection';
 import { DigitalPreservation } from './components/DigitalPreservation';
 import { Footer } from './components/Footer';
@@ -354,6 +355,12 @@ function AppContent() {
                 })}
               </div>
             </div>
+
+            {/* Phonological Articulation Map Section in Dictionary */}
+            <PhonologicalMap
+              initialWord={selectedEntry ? selectedEntry.devanagari : searchQuery}
+              onSelectWord={handleSelectWord}
+            />
           </div>
         )}
 
@@ -372,7 +379,7 @@ function AppContent() {
               </p>
             </div>
 
-            <TransliterationTool />
+            <TransliterationTool onSelectWord={handleSelectWord} />
           </div>
         )}
 
@@ -410,7 +417,7 @@ function AppContent() {
               </p>
             </div>
 
-            <SanskritReader />
+            <SanskritReader onSelectWordForDictionary={handleSelectWord} />
           </div>
         )}
 

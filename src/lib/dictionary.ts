@@ -144,3 +144,11 @@ export function getAllTags(): string[] {
   SANSKRIT_DICTIONARY.forEach(e => e.tags?.forEach(t => set.add(t)));
   return Array.from(set);
 }
+
+/**
+ * Returns featured benchmark words dynamically sourced from the dictionary
+ */
+export function getFeaturedWords(limit = 8): SanskritEntry[] {
+  return SANSKRIT_DICTIONARY.slice(0, limit);
+}
+
