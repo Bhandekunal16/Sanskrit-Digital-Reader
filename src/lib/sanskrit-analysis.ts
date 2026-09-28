@@ -1,16 +1,22 @@
 import { SANSKRIT_DICTIONARY, SanskritEntry } from '../data/sanskritDictionary';
 import { SANSKRIT_TRANSLATIONS, SanskritTranslationEntry } from '../data/translations';
 import { 
+  normalizeSanskrit, 
+  extractPotentialStems, 
+  analyzeMorphology,
+  SanskritProcessor
+} from './sanskrit-processor';
+import { 
   SanskritToken as TokenizerToken, 
   SanskritLine as TokenizerLine, 
   ParsedSanskritDocument, 
-  tokenizeSanskrit, 
-  normalizeSanskrit, 
-  extractPotentialStems 
+  tokenizeSanskrit 
 } from './sanskrit-tokenizer';
 import { devanagariToIast } from './transliteration';
 import { analyzeSanskritPhonology, WordPhonologicalAnalysis } from './phonology';
 import { analyzeSandhi, SandhiAnalysisResult } from './sandhi';
+
+export { SanskritProcessor, normalizeSanskrit, extractPotentialStems, analyzeMorphology };
 
 export type TranslationStatus = 
   | 'translated' 

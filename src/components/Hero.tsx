@@ -68,7 +68,7 @@ export const Hero: React.FC<HeroProps> = ({
                 key={item.id}
                 type="button"
                 onClick={() => onSelectSampleWord(item.devanagari)}
-                className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-[#F2ECE1] text-[#1C1917] border border-[#E0D8CA] rounded-lg text-sm font-medium transition-all shadow-2xs hover:border-[#8C4A2F]/40 flex items-baseline gap-1.5 group"
+                className="min-h-[40px] px-3.5 py-2 bg-[#FFFFFF] hover:bg-[#F2ECE1] text-[#1C1917] border border-[#E0D8CA] rounded-lg text-sm font-medium transition-all shadow-2xs hover:border-[#8C4A2F]/40 flex items-baseline gap-1.5 group cursor-pointer"
               >
                 <span className="font-devanagari font-bold text-base text-[#1C1917] group-hover:text-[#8C4A2F] transition-colors">
                   {item.devanagari}

@@ -12,13 +12,10 @@ import {
   Layers, 
   GitFork, 
   FileText, 
-  Sparkles,
   Search,
-  ExternalLink,
   Activity,
   ArrowRight,
-  ShieldCheck,
-  AlertCircle
+  ShieldCheck
 } from 'lucide-react';
 
 interface WordAnalysisProps {
@@ -113,33 +110,33 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
             <button
               type="button"
               onClick={() => handlePronounce(notFoundQuery)}
-              className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer"
-              title="Pronounce word"
+              className="min-w-[44px] min-h-[44px] p-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+              aria-label="Pronounce word"
             >
-              <Volume2 className="w-4 h-4" />
+              <Volume2 className="w-5 h-5" aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={handleCopy}
-              className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer"
-              title="Copy analysis"
+              className="min-w-[44px] min-h-[44px] p-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+              aria-label="Copy analysis"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-5 h-5 text-emerald-600" aria-hidden="true" /> : <Copy className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
         </div>
 
-        {/* Dynamic Analysis Grid */}
+        {/* Dynamic Analysis Grid (Gestalt grouping) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
           {/* Sandhi & Compound Split */}
           <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-                <GitFork className="w-3.5 h-3.5 text-[#8C4A2F]" />
+                <GitFork className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
                 <span>Sandhi Segmentation (सन्धि-विभागः)</span>
               </span>
-              <span className="text-[10px] font-mono-code text-[#8C4A2F] bg-white px-1.5 py-0.5 rounded border border-[#E0D8CA]">
+              <span className="text-[10px] font-mono-code text-[#8C4A2F] bg-white px-2 py-0.5 rounded border border-[#E0D8CA]">
                 {sandhiAnalysis?.confidence}
               </span>
             </div>
@@ -166,8 +163,8 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
           {/* Morphological Stem Derivation */}
           <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
             <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-[#8C4A2F]" />
-              <span>Morphological Stem (प्रकृति-प्रत्यय-अनुमानम्)</span>
+              <Layers className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
+              <span>Morphological Stem (प्रकृति-प्रत्यय)</span>
             </span>
 
             {dynamicAnalysis?.found ? (
@@ -200,7 +197,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
           <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-[#8C4A2F]" />
+                <Activity className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
                 <span>Computed Pāṇinian Varṇa Articulation</span>
               </span>
               <span className="text-xs text-[#78716C] font-mono-code">
@@ -226,10 +223,10 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
           </div>
         )}
 
-        {/* Suggestions if any */}
+        {/* Suggestions if any (Fitts's Law: 44px min tap targets) */}
         {suggestions.length > 0 && (
           <div className="pt-3 border-t border-[#EFE9DD]">
-            <span className="text-xs text-[#78716C] font-semibold block mb-2">
+            <span className="text-xs text-[#78716C] font-semibold block mb-2.5">
               Related Lexicon Entries:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -238,7 +235,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
                   key={s.id}
                   type="button"
                   onClick={() => onSelectWord(s.devanagari)}
-                  className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#E0D8CA] rounded-lg text-xs font-devanagari font-medium text-[#1C1917] hover:border-[#8C4A2F]/40 cursor-pointer"
+                  className="min-h-[40px] px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#E0D8CA] rounded-xl text-xs font-devanagari font-medium text-[#1C1917] hover:border-[#8C4A2F]/40 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
                 >
                   {s.devanagari} ({s.iast})
                 </button>
@@ -256,7 +253,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
     return (
       <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 sm:p-10 shadow-xs text-center">
         <div className="w-12 h-12 rounded-full bg-[#F5EFEB] text-[#8C4A2F] flex items-center justify-center mx-auto mb-4">
-          <Search className="w-6 h-6" />
+          <Search className="w-6 h-6" aria-hidden="true" />
         </div>
         <h3 className="font-serif-editorial text-2xl font-semibold text-[#1C1917] mb-2">
           Select or Search a Sanskrit Word
@@ -278,7 +275,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
             <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F]">
               Lexical Entry
             </span>
-            <span className="text-xs text-[#A8A29E]">·</span>
+            <span className="text-xs text-[#A8A29E]" aria-hidden="true">·</span>
             <span className="text-xs font-mono-code text-[#78716C] capitalize">
               {entry.partOfSpeech}
             </span>
@@ -298,53 +295,53 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
           <button
             type="button"
             onClick={() => handlePronounce(entry.devanagari)}
-            className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer"
-            title="Pronounce word"
+            className="min-w-[44px] min-h-[44px] p-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+            aria-label="Pronounce word"
           >
-            <Volume2 className="w-4 h-4" />
+            <Volume2 className="w-5 h-5" aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={handleCopy}
-            className="p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer"
-            title="Copy entry details"
+            className="min-w-[44px] min-h-[44px] p-2.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-xl border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+            aria-label="Copy entry details"
           >
-            {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="w-5 h-5 text-emerald-600" aria-hidden="true" /> : <Copy className="w-5 h-5" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       {/* Multilingual Meanings Banner */}
-      <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+      <div className="p-5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
         <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block">
           Multilingual Definitions
         </span>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
           <div>
             <span className="text-xs font-semibold text-[#57534E] block">English:</span>
-            <p className="font-serif-editorial text-[#1C1917] mt-0.5">{entry.meaning}</p>
+            <p className="font-serif-editorial text-[#1C1917] mt-0.5 leading-relaxed">{entry.meaning}</p>
           </div>
           <div>
             <span className="text-xs font-semibold text-[#57534E] block">Hindi (हिन्दी):</span>
-            <p className="font-devanagari text-[#1C1917] mt-0.5">{entry.meaningHindi || '—'}</p>
+            <p className="font-devanagari text-[#1C1917] mt-0.5 leading-relaxed">{entry.meaningHindi || '—'}</p>
           </div>
           <div>
             <span className="text-xs font-semibold text-[#57534E] block">Marathi (मराठी):</span>
-            <p className="font-devanagari text-[#1C1917] mt-0.5">{entry.meaningMarathi || '—'}</p>
+            <p className="font-devanagari text-[#1C1917] mt-0.5 leading-relaxed">{entry.meaningMarathi || '—'}</p>
           </div>
         </div>
       </div>
 
-      {/* Grammatical & Derivational Metadata Grid */}
+      {/* Grammatical & Derivational Metadata Grid (Gestalt grouping) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         {/* Morphology */}
-        <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+        <div className="p-5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
           <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-[#8C4A2F]" />
+            <Layers className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
             <span>Grammatical Paradigm (व्याकरणम्)</span>
           </span>
-          <p className="text-sm text-[#1C1917]">{entry.grammar}</p>
+          <p className="text-sm text-[#1C1917] leading-relaxed">{entry.grammar}</p>
           {entry.root && (
             <div className="text-xs text-[#8C4A2F] pt-1">
               <strong>Root (धातु):</strong> {entry.root} {entry.rootIast && `(${entry.rootIast})`}
@@ -353,9 +350,9 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
         </div>
 
         {/* Sandhi */}
-        <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
+        <div className="p-5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-2">
           <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-            <GitFork className="w-3.5 h-3.5 text-[#8C4A2F]" />
+            <GitFork className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
             <span>Sandhi & Compound Analysis</span>
           </span>
           {sandhiAnalysis && sandhiAnalysis.isCompound ? (
@@ -366,7 +363,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
               <p className="text-xs text-[#78716C] mt-1">{sandhiAnalysis.explanation}</p>
             </div>
           ) : (
-            <p className="text-xs text-[#78716C]">
+            <p className="text-xs text-[#78716C] leading-relaxed">
               Elementary Sanskrit word base (प्रातिपदिकम् / धातुः).
             </p>
           )}
@@ -376,10 +373,10 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
 
       {/* Dynamic Phonological Decomposition Card */}
       {phonologyAnalysis && (
-        <div className="p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-3">
+        <div className="p-5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <span className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-[#8C4A2F]" />
+              <Activity className="w-3.5 h-3.5 text-[#8C4A2F]" aria-hidden="true" />
               <span>Phoneme & Articulation Breakdown (उच्चारण-स्थानम्)</span>
             </span>
             <span className="text-xs text-[#78716C] font-mono-code">
@@ -391,7 +388,7 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
             {phonologyAnalysis.phonemes.map((tok, i) => (
               <div
                 key={i}
-                className="p-2 bg-white border border-[#E0D8CA] rounded-lg text-xs"
+                className="p-2.5 bg-white border border-[#E0D8CA] rounded-xl text-xs shadow-2xs"
               >
                 <div className="font-devanagari font-bold text-sm text-[#1C1917]">
                   {tok.grapheme} <span className="font-mono-code text-[11px] font-normal text-[#8C4A2F]">({tok.iast})</span>
@@ -407,12 +404,12 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
 
       {/* Literary Context / Usage Example */}
       {entry.context && (
-        <div className="p-4 bg-[#FFFFFF] border border-[#EAE3D6] rounded-xl space-y-1.5">
+        <div className="p-5 bg-[#FFFFFF] border border-[#EAE3D6] rounded-xl space-y-1.5">
           <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5" />
+            <FileText className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Classical Context & Usage</span>
           </span>
-          <p className="text-xs text-[#57534E] leading-relaxed italic">
+          <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed italic">
             "{entry.context}"
           </p>
         </div>

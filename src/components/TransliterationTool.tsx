@@ -29,7 +29,6 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
   const [inputText, setInputText] = useState(workspaceText || 'धर्मः');
   const [copied, setCopied] = useState(false);
   const [synced, setSynced] = useState(false);
-  const [showChart, setShowChart] = useState(true);
 
   const sampleWords = useMemo(() => getFeaturedWords(8), []);
 
@@ -85,17 +84,17 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
       <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl shadow-xs overflow-hidden">
         
         {/* Top Header Bar */}
-        <div className="p-6 bg-[#FAF7F2] border-b border-[#EFE9DD] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-6 sm:p-8 bg-[#FAF7F2] border-b border-[#EFE9DD] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="font-serif-editorial text-2xl font-semibold text-[#1C1917]">
+              <h2 className="font-serif-editorial text-2xl sm:text-3xl font-semibold text-[#1C1917]">
                 Sanskrit Transliteration Engine
               </h2>
               <span className="text-xs font-mono-code text-[#8C4A2F] border-l border-[#D6CEBE] pl-2">
                 IAST Standard (ISO 15919)
               </span>
             </div>
-            <p className="text-xs text-[#78716C] mt-1">
+            <p className="text-xs sm:text-sm text-[#78716C] mt-1 max-w-2xl">
               Deterministic rule-based phonetic converter between Devanagari script and diacritical romanization.
             </p>
           </div>
@@ -104,19 +103,19 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
             <button
               type="button"
               onClick={handleSyncToWorkspace}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#8C4A2F] bg-[#FAF7F2] hover:bg-[#8C4A2F] hover:text-white border border-[#E8E1D5] rounded-lg transition-colors shadow-xs cursor-pointer"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#8C4A2F] bg-white hover:bg-[#8C4A2F] hover:text-white border border-[#E8E1D5] rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]"
               title="Apply to entire workspace"
             >
-              {synced ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
+              {synced ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
               <span>{synced ? 'Synced to Workspace' : 'Sync to Workspace'}</span>
             </button>
 
             <button
               type="button"
               onClick={handleSwitchMode}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1C1917] bg-[#FFFFFF] hover:bg-[#F2ECE1] border border-[#D6CEBE] rounded-lg transition-colors shadow-xs cursor-pointer"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-[#1C1917] bg-[#FFFFFF] hover:bg-[#F2ECE1] border border-[#D6CEBE] rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-[#8C4A2F]" />
+              <ArrowRightLeft className="w-4 h-4 text-[#8C4A2F]" />
               <span>
                 {mode === 'dev2iast' ? 'Devanagari → IAST' : 'IAST → Devanagari'}
               </span>
@@ -136,9 +135,9 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
               <button
                 type="button"
                 onClick={() => setInputText('')}
-                className="text-xs text-[#78716C] hover:text-[#1C1917] flex items-center gap-1 cursor-pointer"
+                className="min-h-[36px] px-2 py-1 text-xs text-[#78716C] hover:text-[#1C1917] flex items-center gap-1 cursor-pointer rounded-lg hover:bg-[#FAF7F2]"
               >
-                <RotateCcw className="w-3 h-3" />
+                <RotateCcw className="w-3.5 h-3.5" />
                 <span>Clear</span>
               </button>
             </div>
@@ -162,13 +161,13 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
               <span className="text-xs text-[#78716C] block mb-2 font-medium">
                 Try benchmark terms:
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {sampleWords.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => handleSelectSample(item.devanagari, item.iast)}
-                    className="px-2.5 py-1 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-md text-xs transition-colors font-devanagari cursor-pointer"
+                    className="min-h-[38px] px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari cursor-pointer"
                   >
                     {mode === 'dev2iast' ? item.devanagari : item.iast}
                   </button>
@@ -189,15 +188,16 @@ export const TransliterationTool: React.FC<TransliterationToolProps> = ({ onSele
                   <button
                     type="button"
                     onClick={() => handlePronounce(mode === 'dev2iast' ? inputText : outputText)}
-                    className="p-1.5 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer"
+                    className="min-h-[40px] min-w-[40px] p-2 text-[#57534E] hover:text-[#8C4A2F] hover:bg-[#FAF7F2] rounded-lg border border-[#E8E1D5] transition-colors cursor-pointer flex items-center justify-center"
                     title="Pronounce"
+                    aria-label="Pronounce transliteration"
                   >
-                    <Volume2 className="w-3.5 h-3.5" />
+                    <Volume2 className="w-4 h-4" />
                   </button>
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1C1917] bg-[#FFFFFF] hover:bg-[#F2ECE1] border border-[#D6CEBE] rounded-lg transition-colors shadow-2xs cursor-pointer"
+                    className="min-h-[40px] flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#1C1917] bg-[#FFFFFF] hover:bg-[#F2ECE1] border border-[#D6CEBE] rounded-lg transition-colors shadow-2xs cursor-pointer"
                   >
                     {copied ? (
                       <>

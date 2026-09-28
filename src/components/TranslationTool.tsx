@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useSanskritWorkspace } from '../lib/sanskrit-context';
-import { TargetLanguage } from '../lib/translation';
 import { LanguageSelector } from './LanguageSelector';
 import { TranslationResult } from './TranslationResult';
 import { 
@@ -8,11 +7,8 @@ import {
   RotateCcw, 
   Cpu, 
   Sparkles,
-  BookOpen,
-  ArrowRight,
-  Layers,
-  Search,
-  Loader2
+  Loader2,
+  BookOpen
 } from 'lucide-react';
 
 interface TranslationToolProps {
@@ -97,11 +93,11 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
   return (
     <div className="space-y-8">
       
-      {/* Translation Input & Controls Card */}
+      {/* 1. Sanskrit Translation Input Card */}
       <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl shadow-xs overflow-hidden">
         
         {/* Top Control Bar */}
-        <div className="p-6 bg-[#FAF7F2] border-b border-[#EFE9DD] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-5 sm:p-6 bg-[#FAF7F2] border-b border-[#EFE9DD] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-serif-editorial text-2xl font-semibold text-[#1C1917]">
@@ -111,13 +107,13 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
                 Unified Workspace Pipeline
               </span>
             </div>
-            <p className="text-xs text-[#78716C] mt-1">
-              Translates arbitrary Sanskrit sentences, multi-line verses, and single words into Hindi, Marathi, and English. Updates synchronized workspace state across reader, phonology, and dictionary.
+            <p className="text-xs sm:text-sm text-[#78716C] mt-1 leading-relaxed">
+              Translates arbitrary Sanskrit verses and individual words into Hindi, Marathi, and English. Updates synchronized workspace state across reader, phonology, and dictionary.
             </p>
           </div>
 
-          {/* Language Selector */}
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          {/* Language Selector (Fitts's Law: 44px touch targets) */}
+          <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#57534E] hidden sm:inline">
               Translate To:
             </span>
@@ -129,10 +125,13 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
         </div>
 
         {/* Input Textarea Workspace */}
-        <div className="p-6 sm:p-8 space-y-4">
+        <div className="p-5 sm:p-8 space-y-4">
           
           <div className="flex items-center justify-between mb-1">
-            <label className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5">
+            <label 
+              htmlFor="sanskrit-translation-input"
+              className="text-xs uppercase tracking-wider font-semibold text-[#57534E] flex items-center gap-1.5"
+            >
               <span>Sanskrit Input (संस्कृत वाक्य / श्लोक)</span>
             </label>
             <span className="text-xs text-[#A8A29E] font-mono-code">
@@ -142,22 +141,25 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
 
           <div className="relative">
             <textarea
+              id="sanskrit-translation-input"
               value={localText}
               onChange={(e) => setLocalText(e.target.value)}
               onBlur={() => handleApply(localText)}
               placeholder="संस्कृत वाक्य यहाँ लिखें (Single line or multi-line verses)...&#10;e.g.&#10;असतो मा सद्गमय ।&#10;तमसो मा ज्योतिर्गमय ।"
               rows={5}
-              className="w-full p-4 bg-[#FBF9F5] border border-[#E8E1D5] rounded-xl text-lg sm:text-xl font-devanagari text-[#1C1917] resize-y focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/30 focus:border-[#8C4A2F] transition-all leading-relaxed"
+              className="w-full p-4 bg-[#FBF9F5] border border-[#E8E1D5] rounded-xl text-lg sm:text-xl font-devanagari text-[#1C1917] resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]/40 focus-visible:border-[#8C4A2F] transition-all leading-relaxed"
             />
 
-            <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
+            {/* Action Buttons (Fitts's Law: 44px min-height) */}
+            <div className="flex items-center justify-between mt-3 flex-wrap gap-2.5">
               
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex items-center gap-1 text-xs text-[#78716C] hover:text-[#1C1917] transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#F2ECE1] border border-[#E8E1D5] cursor-pointer"
+                className="min-h-[44px] px-3.5 py-2 flex items-center gap-1.5 text-xs font-medium text-[#78716C] hover:text-[#1C1917] transition-colors rounded-xl hover:bg-[#F2ECE1] border border-[#E8E1D5] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
+                aria-label="Clear translation input"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-4 h-4" aria-hidden="true" />
                 <span>Clear Input</span>
               </button>
 
@@ -165,17 +167,17 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
                 type="button"
                 disabled={isProcessing || !localText.trim()}
                 onClick={() => handleApply(localText)}
-                className="px-6 py-2.5 bg-[#8C4A2F] hover:bg-[#723922] disabled:opacity-50 text-white rounded-xl text-sm font-medium shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                className="min-h-[44px] px-6 py-2.5 bg-[#8C4A2F] hover:bg-[#723922] disabled:opacity-50 text-white rounded-xl text-sm font-semibold shadow-xs transition-all flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                     <span>Analyzing...</span>
                   </>
                 ) : (
                   <>
                     <span>Translate & Analyze</span>
-                    <CornerDownLeft className="w-4 h-4 opacity-80" />
+                    <CornerDownLeft className="w-4 h-4 opacity-80" aria-hidden="true" />
                   </>
                 )}
               </button>
@@ -183,9 +185,9 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
             </div>
           </div>
 
-          {/* Quick-Select Sample Sentences */}
+          {/* Quick-Select Sample Sentences (Fitts's Law: Easy to tap) */}
           <div className="pt-4 border-t border-[#F2EDE2]">
-            <span className="text-xs text-[#78716C] block mb-2 font-medium">
+            <span className="text-xs text-[#78716C] block mb-2.5 font-medium">
               Try benchmark classical verses & multi-line inputs:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -194,7 +196,7 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
                   key={sample.id}
                   type="button"
                   onClick={() => handleSelectSample(sample.text)}
-                  className="px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari hover:border-[#8C4A2F]/40 cursor-pointer"
+                  className="min-h-[38px] px-3 py-2 bg-[#FAF7F2] hover:bg-[#F0EAE0] text-[#1C1917] border border-[#E5DECF] rounded-lg text-xs font-medium transition-colors font-devanagari hover:border-[#8C4A2F]/40 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
                 >
                   {sample.label}
                 </button>
@@ -206,20 +208,20 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
 
       </div>
 
-      {/* Translation Result Card */}
+      {/* 2. Translation Result Card */}
       <TranslationResult onWordClick={handleWordClick} />
 
-      {/* Educational Section: The Machine Translation Challenge for Sanskrit */}
+      {/* 3. Educational Technical Section: Gestalt Grouped Information */}
       <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div className="flex items-center gap-2.5 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center">
-            <Cpu className="w-4 h-4" />
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center shrink-0">
+            <Cpu className="w-5 h-5" aria-hidden="true" />
           </div>
           <div>
             <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1917]">
               Sanskrit Machine Translation Pipeline Architecture
             </h3>
-            <p className="text-xs text-[#78716C]">
+            <p className="text-xs sm:text-sm text-[#78716C]">
               How the multi-tier engine processes user input from tokenization to lexical glossing.
             </p>
           </div>
@@ -231,8 +233,8 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           
-          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
-            <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
+          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl space-y-1.5">
+            <h4 className="font-semibold text-sm text-[#1C1917]">
               1. Multi-Line Tokenization
             </h4>
             <p className="text-[#78716C] leading-relaxed">
@@ -240,8 +242,8 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
             </p>
           </div>
 
-          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
-            <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
+          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl space-y-1.5">
+            <h4 className="font-semibold text-sm text-[#1C1917]">
               2. Morphological Stem & Sandhi Analysis
             </h4>
             <p className="text-[#78716C] leading-relaxed">
@@ -249,8 +251,8 @@ export const TranslationTool: React.FC<TranslationToolProps> = ({ onWordClick })
             </p>
           </div>
 
-          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
-            <h4 className="font-semibold text-sm text-[#1C1917] mb-1">
+          <div className="p-4 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl space-y-1.5">
+            <h4 className="font-semibold text-sm text-[#1C1917]">
               3. Multi-Lingual Gloss Assembly
             </h4>
             <p className="text-[#78716C] leading-relaxed">

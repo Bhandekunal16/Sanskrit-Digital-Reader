@@ -40,7 +40,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
         normalizeIast(entry.iast).includes(qNorm) ||
         entry.meaning.toLowerCase().includes(qLower)
       );
-    }).slice(0, 5);
+    }).slice(0, 6);
   }, [value]);
 
   useEffect(() => {
@@ -89,10 +89,11 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
           onFocus={() => setIsOpen(true)}
           autoFocus={autoFocus}
           placeholder={placeholder}
-          className="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-[#FFFFFF] text-[#1C1917] placeholder:text-[#A8A29E] text-base sm:text-lg rounded-xl border border-[#D6CEBE] shadow-xs focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/40 focus:border-[#8C4A2F] transition-all"
+          aria-label="Search Sanskrit lexicon"
+          className="w-full pl-12 pr-32 py-3.5 sm:py-4 bg-[#FFFFFF] text-[#1C1917] placeholder:text-[#A8A29E] text-base sm:text-lg rounded-xl border border-[#D6CEBE] shadow-xs focus:outline-none focus:ring-2 focus:ring-[#8C4A2F]/40 focus:border-[#8C4A2F] transition-all"
         />
 
-        <div className="absolute right-3 flex items-center gap-1.5">
+        <div className="absolute right-2 sm:right-3 flex items-center gap-1">
           {value && (
             <button
               type="button"
@@ -100,7 +101,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
                 onChange('');
                 inputRef.current?.focus();
               }}
-              className="p-1 text-[#A8A29E] hover:text-[#1C1917] rounded-md transition-colors"
+              className="min-w-[36px] min-h-[36px] p-2 text-[#A8A29E] hover:text-[#1C1917] hover:bg-[#FAF7F2] rounded-lg transition-colors flex items-center justify-center cursor-pointer"
               aria-label="Clear input"
             >
               <X className="w-4 h-4" />
@@ -109,24 +110,24 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
 
           <button
             type="submit"
-            className="px-3.5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-[#8C4A2F] hover:bg-[#723922] rounded-lg transition-colors flex items-center gap-1.5 shadow-xs whitespace-nowrap"
+            className="min-h-[44px] px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-[#8C4A2F] hover:bg-[#723922] rounded-lg transition-colors flex items-center gap-1.5 shadow-xs whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C4A2F] focus:ring-offset-2"
           >
             <span>Analyze</span>
-            <CornerDownLeft className="w-3.5 h-3.5 opacity-80" />
+            <CornerDownLeft className="w-3.5 h-3.5 opacity-80 hidden sm:inline" />
           </button>
         </div>
       </form>
 
       {/* Auto-suggest dropdown */}
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 bg-[#FFFFFF] border border-[#E5DECF] rounded-xl shadow-lg z-50 overflow-hidden">
-          <div className="py-1.5 divide-y divide-[#F5F0E6]">
+        <div className="absolute left-0 right-0 top-full mt-2 bg-[#FFFFFF] border border-[#E5DECF] rounded-xl shadow-lg z-50 overflow-hidden">
+          <div className="p-1.5 divide-y divide-[#F5F0E6]">
             {suggestions.map((entry) => (
               <button
                 key={entry.id}
                 type="button"
                 onClick={() => handleSelect(entry)}
-                className="w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-[#F9F7F2] transition-colors group"
+                className="w-full min-h-[44px] px-4 py-3 text-left flex items-center justify-between hover:bg-[#F9F7F2] rounded-lg transition-colors group cursor-pointer focus:outline-none focus:bg-[#F9F7F2]"
               >
                 <div className="flex items-center gap-3">
                   <span className="font-devanagari font-bold text-lg text-[#1C1917] group-hover:text-[#8C4A2F] transition-colors">
@@ -139,7 +140,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
                 <div className="flex items-center gap-2 text-xs text-[#78716C] max-w-[50%] truncate">
                   <span className="text-[#A8A29E] italic capitalize">{entry.partOfSpeech}</span>
                   <span aria-hidden="true">·</span>
-                  <span className="truncate">{entry.meaning}</span>
+                  <span className="truncate text-[#57534E]">{entry.meaning}</span>
                 </div>
               </button>
             ))}
