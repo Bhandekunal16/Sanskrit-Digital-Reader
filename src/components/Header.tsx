@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Sparkles, Search, Languages, ScrollText, Cpu } from 'lucide-react';
+import { BookOpen, Sparkles, Search, Languages, ScrollText, Cpu, ArrowRightLeft, Globe } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -25,8 +25,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
           </span>
         </button>
 
-        {/* Zone 2: 4-6 clean text navigation links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#57534E]">
+        {/* Zone 2: Navigation Links (Dictionary, Transliteration, Translation, Reader, Language Technology, About) */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#57534E]">
           <button
             onClick={() => setActiveTab('dictionary')}
             className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
@@ -38,16 +38,6 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
             Dictionary
           </button>
           <button
-            onClick={() => setActiveTab('reader')}
-            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
-              activeTab === 'reader'
-                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
-                : 'border-transparent'
-            }`}
-          >
-            Reader
-          </button>
-          <button
             onClick={() => setActiveTab('transliteration')}
             className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
               activeTab === 'transliteration'
@@ -56,6 +46,26 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
             }`}
           >
             Transliteration
+          </button>
+          <button
+            onClick={() => setActiveTab('translation')}
+            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
+              activeTab === 'translation'
+                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
+                : 'border-transparent'
+            }`}
+          >
+            Translation
+          </button>
+          <button
+            onClick={() => setActiveTab('reader')}
+            className={`transition-colors hover:text-[#1C1917] pb-0.5 border-b-2 ${
+              activeTab === 'reader'
+                ? 'text-[#1C1917] border-[#8C4A2F] font-semibold'
+                : 'border-transparent'
+            }`}
+          >
+            Reader
           </button>
           <button
             onClick={() => setActiveTab('technology')}
@@ -79,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
           </button>
         </nav>
 
-        {/* Zone 3: 1-2 primary actions */}
+        {/* Zone 3: Primary Actions */}
         <div className="flex items-center gap-3">
           <button
             onClick={onSearchClick}
@@ -90,41 +100,48 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onSearc
             <span className="hidden sm:inline">Search Lexicon</span>
           </button>
           <button
-            onClick={() => setActiveTab('reader')}
+            onClick={() => setActiveTab('translation')}
             className="px-3.5 py-1.5 text-xs font-medium text-[#FBF9F5] bg-[#2C241E] hover:bg-[#8C4A2F] rounded-lg transition-colors whitespace-nowrap shadow-xs focus-visible:ring-2 focus-visible:ring-[#8C4A2F]"
           >
-            Open Reader
+            Translate
           </button>
         </div>
 
       </div>
 
       {/* Mobile navigation bar */}
-      <div className="md:hidden flex items-center justify-around border-t border-[#E8E1D5] bg-[#F7F4EE] px-2 py-2 text-xs font-medium text-[#57534E]">
+      <div className="lg:hidden flex items-center justify-around border-t border-[#E8E1D5] bg-[#F7F4EE] px-2 py-2 text-xs font-medium text-[#57534E] overflow-x-auto">
         <button
           onClick={() => setActiveTab('dictionary')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded ${activeTab === 'dictionary' ? 'text-[#8C4A2F] font-bold' : ''}`}
+          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'dictionary' ? 'text-[#8C4A2F] font-bold' : ''}`}
         >
           <BookOpen className="w-4 h-4" />
           <span>Dictionary</span>
         </button>
         <button
+          onClick={() => setActiveTab('transliteration')}
+          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'transliteration' ? 'text-[#8C4A2F] font-bold' : ''}`}
+        >
+          <ArrowRightLeft className="w-4 h-4" />
+          <span>Convert</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('translation')}
+          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'translation' ? 'text-[#8C4A2F] font-bold' : ''}`}
+        >
+          <Globe className="w-4 h-4" />
+          <span>Translate</span>
+        </button>
+        <button
           onClick={() => setActiveTab('reader')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded ${activeTab === 'reader' ? 'text-[#8C4A2F] font-bold' : ''}`}
+          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'reader' ? 'text-[#8C4A2F] font-bold' : ''}`}
         >
           <ScrollText className="w-4 h-4" />
           <span>Reader</span>
         </button>
         <button
-          onClick={() => setActiveTab('transliteration')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded ${activeTab === 'transliteration' ? 'text-[#8C4A2F] font-bold' : ''}`}
-        >
-          <Languages className="w-4 h-4" />
-          <span>Convert</span>
-        </button>
-        <button
           onClick={() => setActiveTab('technology')}
-          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded ${activeTab === 'technology' ? 'text-[#8C4A2F] font-bold' : ''}`}
+          className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded shrink-0 ${activeTab === 'technology' ? 'text-[#8C4A2F] font-bold' : ''}`}
         >
           <Cpu className="w-4 h-4" />
           <span>Tech</span>

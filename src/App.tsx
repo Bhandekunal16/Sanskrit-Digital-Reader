@@ -3,26 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { WordAnalysis } from './components/WordAnalysis';
 import { TransliterationTool } from './components/TransliterationTool';
+import { TranslationTool } from './components/TranslationTool';
 import { SanskritReader } from './components/SanskritReader';
 import { TechnologySection } from './components/TechnologySection';
 import { DigitalPreservation } from './components/DigitalPreservation';
 import { Footer } from './components/Footer';
 import { SANSKRIT_DICTIONARY, SanskritEntry } from './data/sanskritDictionary';
-import { searchDictionary, getEntryByDevanagari } from './lib/dictionary';
+import { searchDictionary } from './lib/dictionary';
 import { 
   BookOpen, 
   Languages, 
   ScrollText, 
   Cpu, 
-  Info, 
-  Search,
-  SlidersHorizontal,
-  Sparkles
+  ArrowRightLeft,
+  Globe
 } from 'lucide-react';
 
 export default function App() {
@@ -54,7 +53,7 @@ export default function App() {
     }
 
     // If searching, ensure user is viewing the dictionary view
-    if (activeTab !== 'dictionary' && activeTab !== 'reader') {
+    if (activeTab !== 'dictionary' && activeTab !== 'reader' && activeTab !== 'translation') {
       setActiveTab('dictionary');
     }
   };
@@ -62,6 +61,7 @@ export default function App() {
   const handleSelectWord = (word: string) => {
     setSearchQuery(word);
     handleSearch(word);
+    setActiveTab('dictionary');
     window.scrollTo({ top: 380, behavior: 'smooth' });
   };
 
@@ -117,11 +117,11 @@ export default function App() {
               </h2>
             </div>
 
-            {/* Interactive Tab Switcher Buttons (Functional state selectors) */}
-            <div className="flex items-center p-1 bg-[#EFE9DD] rounded-xl border border-[#DCD3C3] self-start md:self-auto">
+            {/* Interactive Tab Switcher Buttons */}
+            <div className="flex items-center p-1 bg-[#EFE9DD] rounded-xl border border-[#DCD3C3] self-start md:self-auto overflow-x-auto max-w-full">
               <button
                 onClick={() => setActiveTab('dictionary')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all shrink-0 ${
                   activeTab === 'dictionary'
                     ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs font-semibold'
                     : 'text-[#57534E] hover:text-[#1C1917]'
@@ -133,19 +133,31 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('transliteration')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all shrink-0 ${
                   activeTab === 'transliteration'
                     ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs font-semibold'
                     : 'text-[#57534E] hover:text-[#1C1917]'
                 }`}
               >
-                <Languages className="w-3.5 h-3.5 text-[#8C4A2F]" />
+                <ArrowRightLeft className="w-3.5 h-3.5 text-[#8C4A2F]" />
                 <span>Transliteration</span>
               </button>
 
               <button
+                onClick={() => setActiveTab('translation')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all shrink-0 ${
+                  activeTab === 'translation'
+                    ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs font-semibold'
+                    : 'text-[#57534E] hover:text-[#1C1917]'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5 text-[#8C4A2F]" />
+                <span>Translation</span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('reader')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all shrink-0 ${
                   activeTab === 'reader'
                     ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs font-semibold'
                     : 'text-[#57534E] hover:text-[#1C1917]'
@@ -157,7 +169,7 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('technology')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all shrink-0 ${
                   activeTab === 'technology'
                     ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs font-semibold'
                     : 'text-[#57534E] hover:text-[#1C1917]'
@@ -189,7 +201,7 @@ export default function App() {
                         Curated Demo Lexicon ({filteredLexicon.length} Entries)
                       </h3>
                       <p className="text-xs text-[#78716C] mt-1">
-                        Explore core grammatical paradigms from classical Sanskrit literature.
+                        Explore core grammatical paradigms and multilingual definitions from classical literature.
                       </p>
                     </div>
 
@@ -262,10 +274,10 @@ export default function App() {
 
                           <div className="flex items-center gap-2 text-[11px] text-[#A8A29E] pt-2 border-t border-[#EFE9DD]/80">
                             <span className="capitalize">{item.partOfSpeech}</span>
-                            {item.root && item.root !== '—' && (
+                            {item.meaningHindi && (
                               <>
                                 <span aria-hidden="true">·</span>
-                                <span>Root: {item.root}</span>
+                                <span className="font-devanagari truncate">{item.meaningHindi.split(',')[0]}</span>
                               </>
                             )}
                           </div>
@@ -279,6 +291,10 @@ export default function App() {
 
             {activeTab === 'transliteration' && (
               <TransliterationTool />
+            )}
+
+            {activeTab === 'translation' && (
+              <TranslationTool onWordClick={handleSelectWord} />
             )}
 
             {activeTab === 'reader' && (
@@ -296,7 +312,7 @@ export default function App() {
 
         </div>
 
-        {/* Global Technology Section (Always reachable at the bottom of the landing page for complete overview) */}
+        {/* Global Technology Section (Always reachable at the bottom for comprehensive overview) */}
         {activeTab !== 'technology' && activeTab !== 'about' && (
           <section className="bg-[#FAF7F2] border-t border-[#E8E1D5] py-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6">

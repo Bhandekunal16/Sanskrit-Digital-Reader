@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { SANSKRIT_PASSAGES, SanskritPassage, PassageWordToken } from '../data/passages';
+import { TargetLanguage } from '../lib/translation';
+import { LanguageSelector } from './LanguageSelector';
 import { 
   BookOpen, 
   Sparkles, 
@@ -9,11 +11,13 @@ import {
   ArrowRight,
   Info,
   CheckCircle2,
-  ListOrdered
+  ListOrdered,
+  Globe
 } from 'lucide-react';
 
 export const SanskritReader: React.FC = () => {
   const [selectedPassageId, setSelectedPassageId] = useState<string>('vidya-subhashita');
+  const [targetLanguage, setTargetLanguage] = useState<TargetLanguage>('hindi');
   const [selectedToken, setSelectedToken] = useState<PassageWordToken | null>(
     SANSKRIT_PASSAGES[0].tokens[0][0] // Default to first word 'विद्या'
   );
@@ -29,16 +33,48 @@ export const SanskritReader: React.FC = () => {
     setSelectedToken(firstWord);
   };
 
-  const handlePronounce = (text: string) => {
+  const handlePronounce = (text: string, langCode: string = 'hi-IN') => {
     if ('speechSynthesis' in window) {
       setIsPlaying(true);
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'hi-IN';
+      utterance.lang = langCode;
       utterance.rate = 0.8;
       utterance.onend = () => setIsPlaying(false);
       utterance.onerror = () => setIsPlaying(false);
       window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const getPassageTranslation = () => {
+    switch (targetLanguage) {
+      case 'hindi':
+        return currentPassage.translationHindi;
+      case 'marathi':
+        return currentPassage.translationMarathi;
+      case 'english':
+      default:
+        return currentPassage.translation;
+    }
+  };
+
+  const getTokenMeaning = (token: PassageWordToken) => {
+    switch (targetLanguage) {
+      case 'hindi':
+        return token.meaningHindi || token.meaning;
+      case 'marathi':
+        return token.meaningMarathi || token.meaning;
+      case 'english':
+      default:
+        return token.meaning;
+    }
+  };
+
+  const getLanguageLabel = () => {
+    switch (targetLanguage) {
+      case 'hindi': return 'Hindi (हिन्दी)';
+      case 'marathi': return 'Marathi (मराठी)';
+      case 'english': return 'English';
     }
   };
 
@@ -53,7 +89,7 @@ export const SanskritReader: React.FC = () => {
           </span>
         </div>
 
-        {/* Interactive passage selector tabs (allowed under skill for interactive filter controls) */}
+        {/* Interactive passage selector tabs */}
         <div className="flex flex-wrap gap-2">
           {SANSKRIT_PASSAGES.map((passage) => {
             const isActive = passage.id === currentPassage.id;
@@ -146,17 +182,30 @@ export const SanskritReader: React.FC = () => {
 
               <p className="text-[11px] text-[#A8A29E] mt-4 pt-3 border-t border-[#E8E1D5]/60 flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5 text-[#8C4A2F]" />
-                <span>Click on any word to inspect its morphological case, root (dhātu), and meaning.</span>
+                <span>Click on any word to inspect its morphological case, root (dhātu), and multilingual translation.</span>
               </p>
             </div>
 
-            {/* Translation Deck */}
+            {/* Dynamic Passage Translation Deck with Language Selector */}
             <div className="mt-6 pt-4 border-t border-[#F2EDE2]">
-              <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1">
-                English Translation
-              </span>
-              <p className="font-serif-editorial text-lg text-[#292524] leading-relaxed italic">
-                "{currentPassage.translation}"
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>{getLanguageLabel()} Translation</span>
+                </span>
+
+                {/* Reader Language Switcher */}
+                <LanguageSelector
+                  selectedLanguage={targetLanguage}
+                  onLanguageChange={setTargetLanguage}
+                  className="scale-90 origin-left sm:origin-right"
+                />
+              </div>
+
+              <p className={`text-lg text-[#292524] leading-relaxed p-4 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl ${
+                targetLanguage === 'english' ? 'font-serif-editorial italic' : 'font-devanagari font-medium'
+              }`}>
+                "{getPassageTranslation()}"
               </p>
             </div>
 
@@ -189,7 +238,7 @@ export const SanskritReader: React.FC = () => {
 
         </div>
 
-        {/* Right / Side (5 cols): Word Morphological Analysis Panel */}
+        {/* Right / Side (5 cols): Word Morphological & Translation Analysis Panel */}
         <div className="lg:col-span-5 flex flex-col">
           {selectedToken ? (
             <div className="bg-[#FFFFFF] border border-[#E8E1D5] rounded-2xl p-6 shadow-xs flex-1 flex flex-col justify-between">
@@ -218,13 +267,15 @@ export const SanskritReader: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Meaning */}
+                {/* Contextual Meaning in Selected Language */}
                 <div className="p-3.5 bg-[#FAF7F2] border border-[#EAE3D6] rounded-xl mb-4">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C] block mb-0.5">
-                    Meaning in Context
+                    Meaning ({getLanguageLabel()})
                   </span>
-                  <p className="font-serif-editorial text-lg text-[#1C1917] font-medium">
-                    {selectedToken.meaning}
+                  <p className={`text-lg text-[#1C1917] font-medium ${
+                    targetLanguage === 'english' ? 'font-serif-editorial' : 'font-devanagari'
+                  }`}>
+                    {getTokenMeaning(selectedToken)}
                   </p>
                 </div>
 
@@ -274,7 +325,7 @@ export const SanskritReader: React.FC = () => {
               </div>
 
               <div className="mt-6 pt-4 border-t border-[#F2EDE2] text-xs text-[#78716C]">
-                Select other words in the verse to see their grammatical inflection and syntactic role.
+                Select other words in the verse to see their grammatical inflection and multilingual meanings.
               </div>
 
             </div>

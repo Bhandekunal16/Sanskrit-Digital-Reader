@@ -23,8 +23,8 @@ graph TD
     A[Sanskrit Language Technology] --> B[1. Digital Lexicons & Dictionaries]
     A --> C[2. Phonetic Transliteration & Encoding]
     A --> D[3. Morphological Analyzers & FSTs]
-    A --> E[4. Digital Preservation & OCR]
-    A --> F[5. NLP & Syntactic Parsing]
+    A --> E[4. Multilingual Translation & NLP]
+    A --> F[5. Digital Preservation & OCR]
 ```
 
 ---
@@ -52,13 +52,15 @@ graph TD
 
 ---
 
-### 4. Natural Language Processing (NLP) & Computational Challenges
+### 4. Multilingual Machine Translation & Cross-Lingual NLP
+Translating Sanskrit into modern Indo-Aryan languages (Hindi, Marathi) or English demonstrates how language technology democratizes access across linguistic boundaries. Key NLP tasks include:
 
 | NLP Task | Description | Computational Complexity |
 | :--- | :--- | :--- |
 | **Sandhi Splitting (*Padaccheda*)** | Segmenting phonologically merged word boundaries (e.g. `कर्मण्येवाधिकारस्ते` → `कर्मणि + एव + अधिकारः + ते`). | Highly ambiguous; multiple valid splits must be filtered via semantic context. |
 | **Compound Deconstruction (*Samāsa Vigraha*)** | Decomposing long noun compounds into constituent words and identifying internal relations (*Tatpuruṣa*, *Bahuvrīhi*, *Dvandva*). | Exponential combination paths in multi-word compounds. |
 | **Dependency Parsing (*Kāraka Analysis*)** | Mapping thematic case roles (agent, patient, instrument, locus) to analyze non-fixed word order sentences. | Free word-order syntax requires semantic constraint satisfaction. |
+| **Syntactic Reordering** | Translating free poetic Sanskrit word order into target language SOV (Hindi/Marathi) or SVO (English) structures. | Requires deep dependency trees and morphological agreement modeling. |
 
 ---
 
@@ -70,3 +72,4 @@ graph TD
 | **Transliteration** | ✅ Real-time bidirectional Devanagari ⇄ IAST | Complex Vedic accent parsing & multi-script conversion |
 | **Reader Tokenization** | ✅ Pre-annotated, verified classical verses | Automated AI Sandhi segmentation for unedited texts |
 | **Grammatical Display** | ✅ Pāṇinian decomposition & case markers | Full generative FST word derivation engine |
+| **Multilingual Translation** | ✅ Curated Hindi, Marathi, & English dataset with gloss fallback | Full unconstrained neural machine translation (NMT) |

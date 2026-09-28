@@ -151,14 +151,41 @@ export const WordAnalysis: React.FC<WordAnalysisProps> = ({
           </div>
         </div>
 
-        {/* Primary Meaning Deck */}
-        <div className="mt-5 pt-5 border-t border-[#EFE9DD]">
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1">
-            Primary Meaning
-          </span>
-          <p className="font-serif-editorial text-xl sm:text-2xl text-[#1C1917] leading-relaxed">
-            {entry.meaning}
-          </p>
+        {/* Multilingual Meanings Deck */}
+        <div className="mt-5 pt-5 border-t border-[#EFE9DD] space-y-3">
+          <div>
+            <span className="text-xs uppercase tracking-wider font-semibold text-[#8C4A2F] block mb-1">
+              English Meaning
+            </span>
+            <p className="font-serif-editorial text-xl sm:text-2xl text-[#1C1917] leading-relaxed">
+              {entry.meaning}
+            </p>
+          </div>
+
+          {(entry.meaningHindi || entry.meaningMarathi) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {entry.meaningHindi && (
+                <div className="p-3 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8C4A2F] block mb-0.5">
+                    Hindi (हिन्दी)
+                  </span>
+                  <p className="font-devanagari font-medium text-base text-[#1C1917]">
+                    {entry.meaningHindi}
+                  </p>
+                </div>
+              )}
+              {entry.meaningMarathi && (
+                <div className="p-3 bg-[#FBF9F5] border border-[#EAE3D6] rounded-xl">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8C4A2F] block mb-0.5">
+                    Marathi (मराठी)
+                  </span>
+                  <p className="font-devanagari font-medium text-base text-[#1C1917]">
+                    {entry.meaningMarathi}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

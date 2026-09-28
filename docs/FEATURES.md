@@ -1,6 +1,6 @@
 # Features & Capabilities
 
-**Sanskrit Digital Reader** is structured into five integrated functional modules, delivering a comprehensive educational experience.
+**Sanskrit Digital Reader** is structured into six integrated functional modules, delivering a comprehensive educational experience.
 
 ---
 
@@ -16,10 +16,10 @@ The lexicon module provides deep grammatical, morphological, and contextual info
   - **Semantic Meaning Search**: Search by English keywords (e.g., `truth`, `knowledge`, `duty`, `peace`).
 - **Instant Auto-Suggest**: Real-time dropdown suggestions displaying headword, IAST, part of speech, and primary meaning.
 - **Fuzzy Fallback & Suggestions**: If an entered term is not present in the baseline lexicon, the engine calculates Levenshtein string distances and recommends the closest valid entries.
-- **Detailed Morphological Card**:
+- **Multilingual Meaning Card**:
   - **Headword & IAST**: Rendered in high-contrast typography.
   - **Audio Pronunciation**: Text-to-speech pronunciation trigger using native speech synthesis.
-  - **Primary Meaning**: Clear, comprehensive definitions covering philosophical and daily usage.
+  - **Multi-lingual Meanings**: Displays English, Hindi (हिन्दी), and Marathi (मराठी) definitions side-by-side.
   - **Root (*Dhātu*) Breakdown**: Displays root in Devanagari and IAST, English root meaning, and Pāṇinian *Gaṇa* (e.g., *Bhvādi*, *Kryādi*).
   - **Grammatical Categorization**: Gender (*Liṅga*), Number (*Vacana*), Case (*Vibhakti*), or Verbal Tense (*Lakāra*).
   - **Pāṇinian Morphological Decomposition**: Step-by-step *prakṛti-pratyaya* derivation (e.g., `धृ + मन्/घञ् → धर्म + सुँ → धर्मः`).
@@ -50,7 +50,28 @@ A dedicated phonological converter supporting both Devanagari script and the Int
 
 ---
 
-## 3. 📜 Interactive Sanskrit Reader
+## 3. 🌐 Sanskrit Multilingual Translation Tool
+
+A dedicated translation interface providing cross-lingual translations between **Sanskrit and Hindi, Marathi, and English**.
+
+### Key Capabilities:
+- **Target Language Selector**: Instant switching between `Hindi (हिन्दी)`, `Marathi (मराठी)`, and `English`.
+- **Large Sanskrit Textarea Input**: Devanagari-optimized input area with instant translation triggers.
+- **Representative Sentence Suite**: Quick-fill buttons for major classical Sanskrit maxims:
+  - `विद्या ददाति विनयं विनयाद् याति पात्रताम्।`
+  - `सत्यमेव जयते।`
+  - `धर्मो रक्षति रक्षितः।`
+  - `कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।`
+  - `वसुधैव कुटुम्बकम्।`
+  - `अहिंसा परमो धर्मः।`
+  - `सर्वे भवन्तु सुखिनः...`
+- **Side-by-Side Multi-Lingual Comparison**: Toggleable comparative view displaying Hindi, Marathi, and English translations simultaneously.
+- **Word-Level Lexical Gloss**: Automated tokenization breakdown table showing individual word meanings across all three languages.
+- **One-Click Clipboard & Audio**: Copy any translation and listen to native speech synthesis recitation.
+
+---
+
+## 4. 📜 Interactive Sanskrit Reader
 
 An interactive reader that transforms classical Sanskrit verses into annotated, clickable learning canvases.
 
@@ -59,16 +80,16 @@ An interactive reader that transforms classical Sanskrit verses into annotated, 
   - *Hitopadeśa / Subhāṣita*: "विद्या ददाति विनयं..." (The Chain of Virtue and Learning).
   - *Bhagavad Gītā 2.47*: "कर्मण्येवाधिकारस्ते..." (The Doctrine of Selfless Action).
   - *Taittirīya Upaniṣad*: "ॐ सह नाववतु..." (Peace Invocation for Teacher and Disciple).
-- **Interactive Word Tokenization**: Click any individual word token to trigger a dedicated side inspection panel.
+- **Multilingual Language Switcher**: Switch the passage translation between Hindi, Marathi, and English dynamically without losing the selected verse.
+- **Interactive Word Tokenization**: Click any individual word token to trigger a dedicated side inspection panel with definitions in the chosen language.
 - **Active Visual Focus**: Highlighted word tokens with subtle focus rings.
 - **Token Analysis Panel**: Displays the selected word's Devanagari form, IAST romanization, contextual meaning, root (*dhātu*), grammatical inflection, and Sandhi resolution (*padaccheda*).
-- **English Translation**: Complete literary translation of the full verse.
 - **Prose Reconstruction (*Anvaya*)**: Toggleable view displaying the traditional grammatical prose word order.
 - **Full Verse Audio Recitation**: Trigger audio recitation of the entire passage.
 
 ---
 
-## 4. 🤖 Language Technology Educational Section
+## 5. 🤖 Language Technology Educational Section
 
 A comprehensive academic overview explaining how digital tools advance Sanskrit computational linguistics.
 
@@ -76,13 +97,13 @@ A comprehensive academic overview explaining how digital tools advance Sanskrit 
 1. **Digital Lexicons & Dictionaries**: Structured lexical databases, Monier-Williams, Apte, and the Cologne Digital Sanskrit Project.
 2. **Phonetic Transliteration & Encoding**: Unicode standard (0900–097F), IAST, ISO 15919, SLP1, and ITRANS.
 3. **Morphological Analyzers & Rule Engines**: Pāṇini’s 3,959 algebraic sūtras as the world's first formal generative grammar, finite-state transducers (FSTs), and nominal/verbal generators.
-4. **Digital Preservation & Manuscript Informatics**: TEI XML encoding, optical character recognition (OCR) for palm-leaf manuscripts, and open corpuses.
-5. **NLP & Computational Linguistics**: Sandhi splitting, compound deconstruction (*Samāsa vigraha*), dependency parsing (*Kāraka* theory), and machine translation.
+4. **Machine Translation Challenges**: Tokenization, Sandhi boundary detection, Kāraka dependency parsing, and word-sense disambiguation.
+5. **Digital Preservation & Manuscript Informatics**: TEI XML encoding, optical character recognition (OCR) for palm-leaf manuscripts, and open corpuses.
 6. **The 5-Stage Digital Pipeline**: Visual workflow mapping: `Sanskrit Text → Word Selection → Digital Analysis → Meaning / Grammar → Human Understanding`.
 
 ---
 
-## 5. 🏛️ Digital Preservation & Manuscript Heritage
+## 6. 🏛️ Digital Preservation & Manuscript Heritage
 
 An informative archival section highlighting the scale and urgency of Sanskrit digital preservation.
 
@@ -94,7 +115,7 @@ An informative archival section highlighting the scale and urgency of Sanskrit d
 
 ---
 
-## 6. 🎨 User Interface & Accessibility
+## 7. 🎨 User Interface & Accessibility
 
 - **Curatorial Paper Palette**: Warm archival colors (`#FBF9F5`, `#FAF7F2`, `#8C4A2F`, `#2C241E`) designed to evoke parchment and scholarly libraries.
 - **Zero-Pill Typography Discipline**: Clean, unboxed metadata separated by typographic dots (`·`) and slashes.
