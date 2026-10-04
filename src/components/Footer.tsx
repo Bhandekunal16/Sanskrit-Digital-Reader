@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
               सं
             </div>
             <span className="font-serif-editorial text-lg font-semibold text-[#1C1917]">
-              Sanskrit Digital Reader
+              Sanskrit Vani
             </span>
           </Link>
           <p className="text-xs text-[#78716C] leading-relaxed">
@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-[#E8E1D5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#78716C]">
         <div>
-          © {new Date().getFullYear()} Sanskrit Digital Reader. Educational and research demonstration.
+          © {new Date().getFullYear()} Sanskrit Vani. Educational and research demonstration.
         </div>
         <div className="text-[#A8A29E]">
           Dedicated to digital preservation of classical Indic literature.

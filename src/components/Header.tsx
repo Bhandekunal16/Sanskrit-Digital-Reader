@@ -53,13 +53,13 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
             href="/"
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center gap-2 sm:gap-2.5 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C4A2F] rounded-md py-1 min-w-0"
-            aria-label="Sanskrit Digital Reader Home"
+            aria-label="Sanskrit Vani Home"
           >
             <div className="w-8 h-8 rounded-lg bg-[#2C241E] text-[#FBF9F5] flex items-center justify-center font-devanagari font-bold text-base sm:text-lg shadow-xs group-hover:bg-[#8C4A2F] transition-colors shrink-0">
               सं
             </div>
             <span className="font-serif-editorial text-base sm:text-lg md:text-xl font-semibold tracking-tight text-[#1C1917] truncate">
-              Sanskrit Digital Reader
+              Sanskrit Vani
             </span>
           </Link>
         </div>
