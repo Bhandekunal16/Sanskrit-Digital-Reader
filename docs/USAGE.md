@@ -1,14 +1,14 @@
 # User Guide
 
-This guide walks you through every feature of the **Sanskrit Digital Reader** with practical, step-by-step examples.
+This guide walks you through every feature of **Sanskrit Vani** with practical, step-by-step examples.
 
 ---
 
-## 1. 🔍 Searching for Sanskrit Words
+## 1. 🔍 Searching for Sanskrit Words (`/dictionary`)
 
 ### How to Search:
-1. Locate the prominent search bar in the **Hero** section or click the **Search Lexicon** button in the top navigation bar.
-2. Enter your query in any of the three supported formats:
+1. Locate the prominent search bar in the **Hero** section or navigate to `/dictionary`.
+2. Enter your query in any of the supported formats:
    - **Devanagari**: `धर्मः`, `संस्कृतम्`, `ज्ञानम्`, `गच्छति`, `रामः`
    - **IAST (Diacritics)**: `dharmaḥ`, `saṃskṛtam`, `jñānam`, `gacchati`, `rāmaḥ`
    - **Simple Latin (Diacritic-Free)**: `dharma`, `samskrtam`, `jnana`, `gacchati`, `rama`
@@ -16,95 +16,76 @@ This guide walks you through every feature of the **Sanskrit Digital Reader** wi
 3. Click the **Analyze** button or press **Enter**.
 
 ### Quick-Click Sample Words:
-Below the search box, click on any of the curated sample chips:
+Below the search box, click on any curated sample chips:
 - `[धर्मः]` · `[संस्कृतम्]` · `[ज्ञानम्]` · `[गच्छति]` · `[रामः]` · `[सत्यम्]` · `[अहिंसा]` · `[शान्तिः]`
 
 ---
 
-## 2. 📊 Understanding the Word Analysis Card
+## 2. 🔊 Exploring Vowels & Consonants (`/vowels-consonants`)
 
-Once a word is selected or searched, the **Word Analysis Card** renders comprehensive linguistic metadata:
-
-```text
-================================================================================
-धर्मः  (dharmaḥ)                                  [ 🔊 Pronounce ]  [ 📋 Copy ]
-Noun · Masculine noun, nominative singular (प्रथमा विभक्ति, एकवचन)
---------------------------------------------------------------------------------
-PRIMARY MEANING:
-Righteousness, duty, moral order, intrinsic nature, virtue, law
---------------------------------------------------------------------------------
-ROOT / DHĀTU:
-धृ (dhṛ) — "to hold, uphold, support, bear"  (Bhvādi 1st Gaṇa / Curādi 10th Gaṇa)
---------------------------------------------------------------------------------
-GRAMMAR:
-Masculine · Singular · Prathamā (Nominative Case)
---------------------------------------------------------------------------------
-PĀṆINIAN MORPHOLOGICAL DECOMPOSITION:
-धृ (dhṛ) + मन् (man) / घञ् (ghañ) → धर्म (dharma) + सुँ (s) → धर्मः
---------------------------------------------------------------------------------
-CLASSICAL USAGE & CONTEXT:
-धर्मो रक्षति रक्षितः।
-dharmo rakṣati rakṣitaḥ.
-"Dharma protects those who protect it (Manusmṛti 8.15)."
---------------------------------------------------------------------------------
-RELATED VOCABULARY:
-[धार्मिक (dhārmika)]  [अधर्म (adharma)]  [धारणा (dhāraṇā)]  [धरणी (dharaṇī)]
-================================================================================
-```
-
-### Key Interactions on the Analysis Card:
-- **Audio Recitation**: Click the speaker icon (`🔊`) to hear the word pronounced.
-- **Copy Analysis**: Click the copy icon (`📋`) to copy a formatted summary to your clipboard.
-- **Inspect Related Words**: Click any derivative button to immediately switch analysis to that word.
+1. Click **Vowels & Consonants** in the navigation header or open `/vowels-consonants`.
+2. **Alphabet Explorer (वर्णमाला)**:
+   - Filter between *All (५२)*, *Vowels (१४)*, *Consonants (३३)*, and *Conjuncts/Vedic (५)*.
+   - Click any card to see its full linguistic breakdown and hear its sound.
+   - Click **Play All in Sequence (स्वर-गान)** to start an automated guided tour.
+   - Adjust playback speed (`0.5x`, `0.75x`, `1.0x`) for comfortable listening.
+3. **Watch: Articulation Anatomy (*स्थान-दर्शन*)**:
+   - Inspect the 8 anatomical zones (*Kaṇṭha*, *Tālu*, *Mūrdhā*, *Danta*, *Oṣṭha*, *Nāsikā*) to see which sounds emerge from each vocal organ.
+   - Inspect the **Akṣara Anatomy Formula** showing pure consonants merging with vocalic mātrās.
+4. **Bāraha-khaḍī Studio (बारहखड़ी)**:
+   - Pick any Sanskrit consonant (e.g. `क`, `ग`, `त`, `म`) to generate the full 13-form mātrā table (`क, का, कि, की, कु, कू, कृ, के, कै, को, कौ, कं, कः`).
+   - Click any card to hear it pronounced or chant the entire sequence.
+5. **Pāṇinian Śikṣā Verses (पाणिनीय-शिक्षा)**:
+   - Listen to classical chanted sūtras (*अकुहविसर्जनीयानां कण्ठः*, etc.) with English and Hindi explanations.
+6. **Ear Training Practice (श्रवण-अभ्यास)**:
+   - Click the audio button to hear a sound and select the matching Devanagari character.
 
 ---
 
-## 3. 🔤 Using the Transliteration Tool
+## 3. 🔤 Using the Transliteration Tool (`/transliteration`)
 
-1. Click **Transliteration** in the header or the **Try Sanskrit Language Technology** tab bar.
+1. Click **Transliteration** in the header.
 2. Select your desired mode:
    - **Devanagari → IAST**: Converts Devanagari script into standard diacritical romanization.
    - **IAST → Devanagari**: Converts romanized text with diacritics into Devanagari characters.
-3. Type or paste your Sanskrit text into the left editor.
-4. The converted text updates in real-time in the right output panel.
+3. Type or paste your Sanskrit text into the input editor.
+4. The converted text updates in real-time in the output panel.
 5. Click **Copy** to copy the transliteration to your clipboard.
-6. Try benchmark words using the quick-fill buttons:
-   - `धर्मः` → `dharmaḥ`
-   - `रामः` → `rāmaḥ`
-   - `कृष्णः` → `kṛṣṇaḥ`
-   - `योगः` → `yogaḥ`
-   - `ज्ञानम्` → `jñānam`
-   - `संस्कृतम्` → `saṃskṛtam`
-7. Explore the **Sanskrit Phonetic Articulation Map** at the bottom to learn which vocal organs (*Sthāna*) produce each sound.
 
 ---
 
-## 4. 📜 Using the Interactive Sanskrit Reader
+## 4. 🌐 Using the Multilingual Translation Tool (`/translation`)
 
-1. Click **Reader** in the top navigation or tab bar.
-2. Choose a classical passage using the selector tabs:
-   - **On the Fruits of Learning** (*Hitopadeśa*)
-   - **The Doctrine of Selfless Action** (*Bhagavad Gītā 2.47*)
-   - **Peace Invocation of Knowledge** (*Taittirīya Upaniṣad*)
-3. **Select Any Word**: Click on any word in the verse (e.g., `विद्या`, `ददाति`, `विनयम्`, `कर्मणि`).
-4. **Inspect the Token Panel**: The side panel updates with:
-   - Devanagari word & IAST transliteration
-   - Contextual meaning
-   - Grammatical inflection (e.g., *Ablative Singular*, *Present 3rd Person Verb*)
-   - Underlying verbal root (*dhātu*)
-   - Sandhi resolution (*padaccheda*) if the word was extracted from a compound
-5. **View Full Translation**: Read the complete English verse translation below the text.
-6. **Reveal Pāṇinian Prose Order (*Anvaya*)**: Click **View Pāṇinian Prose Order (अन्वयः)** to see the words rearranged into standard subject-object-verb prose order.
-7. **Listen to Full Recitation**: Click the speaker icon at the top of the passage card to listen to the verse recited aloud.
+1. Click **Translation** in the header.
+2. Select your target language: **Hindi (हिन्दी)**, **Marathi (मराठी)**, or **English**.
+3. Choose a sample phrase (e.g., `विद्या ददाति विनयं...`, `सत्यमेव जयते।`, `वसुधैव कुटुम्बकम्।`) or enter a custom sentence.
+4. Toggle **Comparative View** to see all three languages side-by-side.
+5. Review the **Word-Level Gloss** table for token-by-token syntactic analysis.
 
 ---
 
-## 5. 🤖 Exploring Language Technology & Digital Preservation
+## 5. 📜 Using the Interactive Sanskrit Reader (`/reader`)
 
-1. Click **Language Technology** in the header to learn about:
-   - Digital lexicons and graph databases
-   - Unicode encoding standards (U+0900–U+097F)
-   - Morphological rule engines (Pāṇini's *Aṣṭādhyāyī*)
-   - NLP challenges (Sandhi splitting, compound deconstruction)
-   - The 5-stage digital pipeline
-2. Click **About** to explore the manuscript heritage section, detailing the 30+ million manuscripts, physical degradation risks, and digital preservation initiatives.
+1. Click **Reader** in the top navigation.
+2. Choose a classical passage (*Hitopadeśa*, *Bhagavad Gītā 2.47*, *Taittirīya Upaniṣad*).
+3. **Select Any Word**: Click on any word in the verse to open the token analysis side panel.
+4. **Switch Translation Language**: Toggle between Hindi, Marathi, and English translations.
+5. **Reveal Pāṇinian Prose Order (*Anvaya*)**: View the traditional grammatical subject-object-verb word order.
+6. **Listen to Full Recitation**: Click the audio button to hear the verse recited aloud.
+
+---
+
+## 6. 🎓 Taking a Sanskrit Quiz (`/quiz`)
+
+1. Click **Quiz** in the header.
+2. **Configure Your Quiz**:
+   - Select a category (Vocabulary, Grammar, Sandhi, Samāsa, Transliteration, Phonology, Translation, Reading, or Mixed).
+   - Choose a difficulty level: **Beginner**, **Intermediate**, or **Advanced**.
+   - Choose question count: **5, 10, 15, or 20 questions**.
+3. Click **Start Quiz (परीक्षा आरम्भः)**.
+4. **Answer Questions**:
+   - For single-choice, click your selected option.
+   - For multiple-choice, select all applicable answers.
+   - Click **Show Hint (सङ्केतं पश्यतु)** if you need reasoning assistance.
+5. Click **Submit Answer (उत्तरं प्रेषयतु)** to see instant correctness feedback and Pāṇinian explanations.
+6. Complete the quiz to view your final accuracy percentage, score tier, and detailed question review.

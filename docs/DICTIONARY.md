@@ -1,6 +1,6 @@
 # Sanskrit Dictionary & Lexical Architecture
 
-The **Sanskrit Digital Reader** dictionary module implements a structured, multi-dimensional lexical model designed to represent the rich inflectional and morphological realities of Sanskrit.
+The **Sanskrit Vani** dictionary module at `/dictionary` implements a structured, multi-dimensional lexical model designed to represent the rich inflectional, derivational, and morphological realities of Sanskrit.
 
 ---
 
@@ -14,6 +14,8 @@ export interface SanskritEntry {
   devanagari: string;                        // Canonical Devanagari representation (e.g. 'धर्मः')
   iast: string;                              // Standard IAST romanization (e.g. 'dharmaḥ')
   meaning: string;                           // Primary English definitions
+  meaningHi?: string;                        // Hindi definition (e.g. 'सद्कर्म / कर्तव्य')
+  meaningMr?: string;                        // Marathi definition (e.g. 'कर्तव्य / सद्कर्म')
   root?: string;                             // Verbal root in Devanagari (e.g. 'धृ')
   rootIast?: string;                         // Verbal root in IAST (e.g. 'dhṛ')
   rootMeaning?: string;                      // Meaning of the root (e.g. 'to hold, uphold, support')
@@ -65,7 +67,7 @@ export function normalizeIast(str: string): string {
 }
 ```
 
-This ensures that queries like `dharma`, `dharm`, `dharmah`, and `dharmaḥ` all correctly resolve to `धर्मः`.
+Queries like `dharma`, `dharm`, `dharmah`, and `dharmaḥ` all correctly resolve to `धर्मः`.
 
 ### 2. Search Precedence
 1. **Exact Devanagari Match**: Matches the exact word or word stem minus visarga/anusvāra.
@@ -81,32 +83,3 @@ If a user searches for a term not present in the curated demo dataset:
 2. The entries with the lowest edit distances are ranked and returned as helpful suggestions.
 3. The UI presents an informative fallback:
    > *"No entry found in the demo dictionary. Did you mean one of these words?"*
-
----
-
-## 📝 Sample Lexicon Record
-
-```typescript
-{
-  id: 'jnanam',
-  devanagari: 'ज्ञानम्',
-  iast: 'jñānam',
-  meaning: 'Knowledge, wisdom, cognition, spiritual realization, consciousness',
-  root: 'ज्ञा',
-  rootIast: 'jñā',
-  rootMeaning: 'to know, perceive, understand',
-  rootClass: 'Kryādi (9th Gaṇa)',
-  partOfSpeech: 'noun',
-  grammar: 'Neuter noun, nominative singular (प्रथमा विभक्ति, एकवचन)',
-  gender: 'neuter',
-  number: 'singular',
-  caseOrVibhakti: 'prathamā (nominative)',
-  morphology: 'ज्ञा (jñā) + ल्युट् (lyuṭ / -ana suffix) + अम् (am) → ज्ञानम्',
-  etymology: 'Proto-Indo-European *ǵneh₃- ("to know"), cognate with Greek gnōsis and English know.',
-  example: 'न हि ज्ञानेन सदृशं पवित्रमिह विद्यते।',
-  exampleIast: 'na hi jñānena sadṛśaṃ pavitramiha vidyate.',
-  exampleMeaning: 'Truly, there is nothing in this world as purifying as knowledge (Bhagavad Gītā 4.38).',
-  relatedWords: ['ज्ञानी (jñānī)', 'विज्ञान (vijñāna)', 'अज्ञान (ajñāna)', 'जिज्ञासा (jijñāsā)'],
-  tags: ['philosophy', 'epistemology', 'vedanta']
-}
-```

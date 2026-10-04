@@ -1,6 +1,6 @@
 # Transliteration Engine & Sanskrit Phonology
 
-The **Sanskrit Digital Reader** transliteration module implements a deterministic, bidirectional converter between the native **Devanagari** script and the **IAST (International Alphabet of Sanskrit Transliteration)** standard (ISO 15919).
+The **Sanskrit Vani** transliteration module at `/transliteration` implements a deterministic, bidirectional converter between the native **Devanagari** script and the **IAST (International Alphabet of Sanskrit Transliteration)** standard (ISO 15919).
 
 ---
 
@@ -60,25 +60,9 @@ Sanskrit literature was historically written across multiple regional scripts (i
 
 ---
 
-## ⚡ Algorithm Implementation Details
+## ⚡ Real-Time Transliteration Algorithm
 
-### Devanagari → IAST (`devanagariToIast`)
-1. Iterates character-by-character through the Devanagari string.
-2. If a consonant is encountered, the lookahead character is inspected:
-   - If followed by a **Virāma** (`्`), the base consonant is output without any trailing vowel (`k`).
-   - If followed by a **Dependent Vowel Sign** (`ा`, `ि`, etc.), the corresponding vowel is appended (`kā`, `ki`).
-   - If followed by another consonant or whitespace, the default inherent `a` is appended (`ka`).
-3. Handles multi-character conjuncts (`क्ष` → `kṣ`, `ज्ञ` → `jñ`).
-
-### IAST → Devanagari (`iastToDevanagari`)
-1. Tokenizes multi-character sequences (`kṣ`, `jñ`, `ṭh`, `dh`, `ai`, `au`, `ṛ`).
-2. Matches independent vowels when appearing at the start of words or after whitespace.
-3. Automatically attaches dependent *mātrās* when vowels follow consonants.
-
----
-
-## ⚠️ Limitations of the Demo Engine
-
-- **Scope**: This is an educational, deterministic client-side implementation designed for standard classical Sanskrit prose and poetry.
-- **Vedic Accents**: It does not currently parse Vedic pitch accents (*Udātta*, *Anudātta*, *Svarita*).
-- **Complex Rare Ligatures**: Rare historical epigraphical ligatures are mapped to their standardized modern Devanagari equivalents.
+The algorithm in `src/lib/transliteration.ts` traverses the input string using deterministic regular expressions:
+1. Translates multi-character consonants (such as `kh`, `gh`, `ch`, `jh`, `ṭh`, `ḍh`, `th`, `dh`, `ph`, `bh`) before single plosives.
+2. Manages vowel *mātrās* when preceded by consonants, and independent initial vowels when at word start or after other vowels.
+3. Automatically suppresses inherent short `a` when a virāma (्) is present.

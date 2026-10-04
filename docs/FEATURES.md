@@ -1,10 +1,10 @@
 # Features & Capabilities
 
-**Sanskrit Digital Reader** is structured into six integrated functional modules, delivering a comprehensive educational experience.
+**Sanskrit Vani** is structured into eight integrated functional modules, delivering a comprehensive educational experience.
 
 ---
 
-## 1. 📖 Digital Sanskrit Lexicon & Word Analysis
+## 1. 📖 Digital Sanskrit Lexicon & Word Analysis (`/dictionary`)
 
 The lexicon module provides deep grammatical, morphological, and contextual information for Sanskrit terms.
 
@@ -29,49 +29,51 @@ The lexicon module provides deep grammatical, morphological, and contextual info
 
 ---
 
-## 2. 🔤 Bidirectional Transliteration Tool
+## 2. 🔊 Vowels & Consonants (Varṇamālā: स्वर एवं व्यञ्जन) (`/vowels-consonants`)
+
+A dedicated phonological and acoustic suite for mastering the 52 characters of the Sanskrit alphabet.
+
+### Key Capabilities:
+- **Complete Varṇamālā Explorer**: Browse all 14 vowels (*Svaras*), 33 consonants (*Vyañjanas*), and classical conjuncts/Vedic characters.
+- **Dual-Engine Audio Pronunciation**:
+  - Web Audio API acoustic formant synthesizer for instantaneous zero-latency human vocal tract resonance ($F_1, F_2, F_3$).
+  - Web Speech API Indic speech synthesis for native cadence.
+- **Guided Autoplay Tour (स्वर-गान / व्यञ्जन-गान)**: Auto-advancing auditory sequence with speed toggles (`0.5x`, `0.75x`, `1.0x`).
+- **Watch: Vocal Tract Articulation Anatomy (*स्थान-दर्शन*)**:
+  - Anatomical breakdown of the 8 traditional points of articulation: *Kaṇṭha* (Throat), *Tālu* (Hard Palate), *Mūrdhā* (Dome of Palate), *Danta* (Teeth), *Oṣṭha* (Lips), *Nāsikā* (Nasal Cavity), *Kaṇṭhatālu*, *Kaṇṭhoṣṭha*, and *Dantoṣṭha*.
+- **Akṣara Syllable Construction**: Visual formula illustrating how pure halanta consonants combine with vocalic mātrās (e.g., `क्` + `ा` = `का`).
+- **Bāraha-khaḍī Studio (बारहखड़ी)**: Interactive 13-mātrā combination generator for any selected consonant.
+- **Pāṇinian Śikṣā Verses**: Traditional recitation chants (*अकुहविसर्जनीयानां कण्ठः*, etc.) with audio and translations.
+- **Ear Training Listening Quiz**: Audio discrimination practice distinguishing subtle sounds (retroflex vs dental, aspirates, sibilants).
+
+---
+
+## 3. 🔤 Bidirectional Transliteration Tool (`/transliteration`)
 
 A dedicated phonological converter supporting both Devanagari script and the International Alphabet of Sanskrit Transliteration (IAST).
 
 ### Key Capabilities:
 - **Devanagari → IAST**: Deterministic rule-based conversion respecting independent vowels, dependent vowel signs (*mātrās*), inherent 'a' suppression via *halanta/virāma* (्), *anusvāra* (ं → ṃ), *visarga* (ः → ḥ), and *avagraha* (ऽ → ').
 - **IAST → Devanagari**: Reverse mapping converting romanized strings with diacritics into syntactically valid Devanagari ligatures and conjuncts.
-- **One-Click Benchmark Suite**: Quick-fill buttons for standard phonetic test cases:
-  - `धर्मः` → `dharmaḥ`
-  - `रामः` → `rāmaḥ`
-  - `कृष्णः` → `kṛṣṇaḥ`
-  - `योगः` → `yogaḥ`
-  - `ज्ञानम्` → `jñānam`
-  - `संस्कृतम्` → `saṃskṛtam`
-  - `विद्या` → `vidyā`
-  - `शान्तिः` → `śāntiḥ`
+- **Benchmark Suite**: Quick-fill buttons for standard phonetic test cases (`धर्मः`, `कृष्णः`, `ज्ञानम्`, `संस्कृतम्`, `शान्तिः`).
 - **Clipboard Integration**: One-click copying with active confirmation state.
-- **Sanskrit Phonetic Articulation Map (*Sthāna-Taxonomy*)**: Interactive chart categorizing phonemes into Guttural (*Kaṇṭhya*), Palatal (*Tālavya*), Retroflex (*Mūrdhanya*), Dental (*Dantya*), and Labial (*Oṣṭhya*).
 
 ---
 
-## 3. 🌐 Sanskrit Multilingual Translation Tool
+## 4. 🌐 Sanskrit Multilingual Translation Tool (`/translation`)
 
-A dedicated translation interface providing cross-lingual translations between **Sanskrit and Hindi, Marathi, and English**.
+A dedicated translation interface providing cross-lingual translations between **Sanskrit, Hindi, Marathi, and English**.
 
 ### Key Capabilities:
 - **Target Language Selector**: Instant switching between `Hindi (हिन्दी)`, `Marathi (मराठी)`, and `English`.
-- **Large Sanskrit Textarea Input**: Devanagari-optimized input area with instant translation triggers.
-- **Representative Sentence Suite**: Quick-fill buttons for major classical Sanskrit maxims:
-  - `विद्या ददाति विनयं विनयाद् याति पात्रताम्।`
-  - `सत्यमेव जयते।`
-  - `धर्मो रक्षति रक्षितः।`
-  - `कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।`
-  - `वसुधैव कुटुम्बकम्।`
-  - `अहिंसा परमो धर्मः।`
-  - `सर्वे भवन्तु सुखिनः...`
+- **Representative Sentence Suite**: Quick-fill buttons for major classical Sanskrit maxims (`विद्या ददाति विनयं...`, `सत्यमेव जयते।`, `धर्मो रक्षति रक्षितः।`, `वसुधैव कुटुम्बकम्।`).
 - **Side-by-Side Multi-Lingual Comparison**: Toggleable comparative view displaying Hindi, Marathi, and English translations simultaneously.
 - **Word-Level Lexical Gloss**: Automated tokenization breakdown table showing individual word meanings across all three languages.
 - **One-Click Clipboard & Audio**: Copy any translation and listen to native speech synthesis recitation.
 
 ---
 
-## 4. 📜 Interactive Sanskrit Reader
+## 5. 📜 Interactive Sanskrit Reader (`/reader`)
 
 An interactive reader that transforms classical Sanskrit verses into annotated, clickable learning canvases.
 
@@ -80,44 +82,48 @@ An interactive reader that transforms classical Sanskrit verses into annotated, 
   - *Hitopadeśa / Subhāṣita*: "विद्या ददाति विनयं..." (The Chain of Virtue and Learning).
   - *Bhagavad Gītā 2.47*: "कर्मण्येवाधिकारस्ते..." (The Doctrine of Selfless Action).
   - *Taittirīya Upaniṣad*: "ॐ सह नाववतु..." (Peace Invocation for Teacher and Disciple).
-- **Multilingual Language Switcher**: Switch the passage translation between Hindi, Marathi, and English dynamically without losing the selected verse.
-- **Interactive Word Tokenization**: Click any individual word token to trigger a dedicated side inspection panel with definitions in the chosen language.
-- **Active Visual Focus**: Highlighted word tokens with subtle focus rings.
+- **Multilingual Language Switcher**: Switch the passage translation between Hindi, Marathi, and English dynamically.
+- **Interactive Word Tokenization**: Click any individual word token to trigger a dedicated inspection panel.
 - **Token Analysis Panel**: Displays the selected word's Devanagari form, IAST romanization, contextual meaning, root (*dhātu*), grammatical inflection, and Sandhi resolution (*padaccheda*).
-- **Prose Reconstruction (*Anvaya*)**: Toggleable view displaying the traditional grammatical prose word order.
+- **Prose Reconstruction (*Anvaya*)**: Toggleable view displaying traditional grammatical prose word order.
 - **Full Verse Audio Recitation**: Trigger audio recitation of the entire passage.
 
 ---
 
-## 5. 🤖 Language Technology Educational Section
+## 6. 🎓 Sanskrit Quiz & Assessment (`/quiz`)
+
+A comprehensive assessment engine designed to test, practice, and solidify Sanskrit understanding.
+
+### Key Capabilities:
+- **8 Categories + Mixed Mode**: Vocabulary, Grammar, Sandhi, Samāsa, Transliteration, Phonology, Translation, Reading.
+- **3 Difficulty Tiers**: Beginner (प्रारम्भिक), Intermediate (मध्यम), Advanced (प्रौढ).
+- **Configurable Length**: Select 5, 10, 15, or 20 questions.
+- **Multiple Question Formats**: Single Choice, Multiple Choice (select all correct), and True/False.
+- **Hint System**: Toggleable reasoning hints without spoiling the answer.
+- **Immediate Grammatical Feedback**: In-depth explanations displayed after submission.
+- **Performance Evaluation**: Accuracy scoring, tier badges, and local attempt history tracking.
+
+---
+
+## 7. 🤖 Language Technology Educational Section (`/technology`)
 
 A comprehensive academic overview explaining how digital tools advance Sanskrit computational linguistics.
 
 ### Key Topics:
-1. **Digital Lexicons & Dictionaries**: Structured lexical databases, Monier-Williams, Apte, and the Cologne Digital Sanskrit Project.
-2. **Phonetic Transliteration & Encoding**: Unicode standard (0900–097F), IAST, ISO 15919, SLP1, and ITRANS.
-3. **Morphological Analyzers & Rule Engines**: Pāṇini’s 3,959 algebraic sūtras as the world's first formal generative grammar, finite-state transducers (FSTs), and nominal/verbal generators.
-4. **Machine Translation Challenges**: Tokenization, Sandhi boundary detection, Kāraka dependency parsing, and word-sense disambiguation.
-5. **Digital Preservation & Manuscript Informatics**: TEI XML encoding, optical character recognition (OCR) for palm-leaf manuscripts, and open corpuses.
-6. **The 5-Stage Digital Pipeline**: Visual workflow mapping: `Sanskrit Text → Word Selection → Digital Analysis → Meaning / Grammar → Human Understanding`.
+- **Digital Lexicons & Dictionaries**: Structured databases, Monier-Williams, Apte, Cologne Digital Sanskrit Project.
+- **Phonetic Encoding**: Unicode (U+0900–U+097F), IAST, ISO 15919, SLP1, ITRANS.
+- **Morphological Analyzers**: Pāṇini’s 3,959 sūtras as formal generative grammar, finite-state transducers (FSTs).
+- **Machine Translation**: Tokenization, Sandhi splitting, Kāraka dependency parsing.
+- **The 5-Stage Digital Pipeline**: `Sanskrit Text → Word Selection → Digital Analysis → Meaning / Grammar → Human Understanding`.
 
 ---
 
-## 6. 🏛️ Digital Preservation & Manuscript Heritage
+## 8. 🏛️ Digital Preservation & Manuscript Heritage (`/about`)
 
 An informative archival section highlighting the scale and urgency of Sanskrit digital preservation.
 
 ### Key Topics:
 - **Scale of Heritage**: Overview of the estimated 30+ million extant manuscripts.
-- **Preservation Vulnerabilities**: Physical decay of palm leaves, birch bark (*Bhūrjapatra*), and acid-paper manuscripts in tropical climates.
-- **Democratization of Knowledge**: Overcoming geographical restrictions through open-access digital repositories.
-- **Computational Graph Integration**: Linking philosophical, astronomical, and medical treatises via standardized semantic metadata.
-
----
-
-## 7. 🎨 User Interface & Accessibility
-
-- **Curatorial Paper Palette**: Warm archival colors (`#FBF9F5`, `#FAF7F2`, `#8C4A2F`, `#2C241E`) designed to evoke parchment and scholarly libraries.
-- **Zero-Pill Typography Discipline**: Clean, unboxed metadata separated by typographic dots (`·`) and slashes.
-- **Responsive Layout**: Fluid experience across desktop, tablet, and mobile devices.
-- **Keyboard Friendly**: Full keyboard navigation across search inputs and reader controls.
+- **Preservation Vulnerabilities**: Physical decay of palm leaves, birch bark (*Bhūrjapatra*), and paper manuscripts.
+- **Democratization of Knowledge**: Overcoming geographical barriers through open-access digital repositories.
+- **TEI XML Standards**: Encoding scholarly apparatus and digital critical editions.

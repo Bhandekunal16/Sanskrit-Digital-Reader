@@ -1,73 +1,27 @@
-# Digital Preservation of Sanskrit Heritage
+# Digital Preservation & Manuscript Heritage
 
-This document outlines the scale, vulnerabilities, technological methods, and global imperative for the digital preservation of Sanskrit literature and manuscripts.
-
----
-
-## 📚 The Scale of Sanskrit Manuscript Heritage
-
-Sanskrit boasts the largest surviving manuscript heritage of any ancient civilization:
-- **Estimated Manuscript Volume**: Scholars and archival bodies (such as the National Mission for Manuscripts in India) estimate that between **30 million and 35 million manuscripts** exist worldwide.
-- **Geographic Spread**: Manuscripts are conserved across India, Nepal, Tibet, Central Asia, Southeast Asia, and major university libraries across Europe, Japan, and North America.
-- **Breadth of Disciplines**: Sanskrit literature encompasses not only philosophy, spirituality, and epic poetry, but also extensive treatises on:
-  - **Mathematics (*Gaṇita*)**: Sulba Sūtras, Āryabhaṭa, Brahmagupta, Bhāskara II.
-  - **Astronomy (*Jyotiṣa*)**: Sūrya Siddhānta, planetary models.
-  - **Medicine & Surgery (*Āyurveda*)**: Caraka Saṃhitā, Suśruta Saṃhitā.
-  - **Linguistics & Phonetics (*Vyākaraṇa & Śikṣā*)**: Pāṇini, Patañjali, Bhartṛhari.
-  - **Architecture & Metallurgy (*Vāstu & Rasashāstra*)**: Temple engineering, alloys.
-- **The Unedited Majority**: Over **90%** of extant manuscripts remain uncataloged, unedited, or unpublished in modern critical editions.
+The **Digital Preservation** section at `/about` explores the scale, urgency, and technical methodologies involved in preserving India's vast manuscript heritage.
 
 ---
 
-## ⏳ Physical Vulnerabilities & The Archival Crisis
+## 🏛️ The Scale of Sanskrit Textual Heritage
 
-```mermaid
-graph TD
-    A[Manuscript Physical Vulnerabilities] --> B[1. Organic Decay: Palm-leaf, Birch-bark, Handmade Paper]
-    A --> C[2. Climate: High Humidity, Monsoon Cycles, Fungal Growth]
-    A --> D[3. Biological Pests: Silverfish, Bookworms, Termites]
-    A --> E[4. Scarcity of Traditional Epigraphists & Paleographers]
-```
-
-Traditional media—such as dried palm leaves (*Tāḷapatra*) and birch bark (*Bhūrjapatra*)—are inherently fragile. Without controlled archival environments, physical manuscripts degrade irreversibly within a few hundred years.
+- **Estimated Manuscripts**: Over **30 million manuscripts** exist in public and private collections across India, Nepal, Southeast Asia, and European libraries.
+- **Uncataloged & Unpublished**: Over **95%** of surviving Sanskrit manuscripts remain unedited, uncataloged, or unpublished.
+- **Vulnerability to Physical Decay**: Manuscripts on birch bark (*Bhūrjapatra*), palm leaves (*Tāḷapatra*), and handmade paper are susceptible to humidity, fungus, insect damage, and ink flaking in tropical climates.
 
 ---
 
-## 💻 Digital Preservation Strategies
+## 💾 Modern Digital Archiving Technologies
 
 ### 1. High-Resolution Multispectral Imaging
-- Preserves raw visual folios before physical degradation destroys the ink.
-- **Multispectral Photography**: Uses ultraviolet and infrared light bands to recover faded or erased text on carbon-damaged folios.
+Captures faded and water-damaged palm-leaf manuscripts under ultraviolet and infrared light, making illegible ink strokes visible.
 
-### 2. Standardized Machine-Readable Encoding (TEI XML)
-- Scanning alone produces only non-searchable image pixels.
-- The **Text Encoding Initiative (TEI)** XML standard provides semantic markup for:
-  - Critical apparatus variants across different manuscript recensions.
-  - Line breaks, foliation, scribe colophons, and marginalia.
-  - Named entity recognition (authors, deities, geographical locations).
+### 2. Optical Character Recognition (OCR) for Indic Scripts
+Modern deep-learning OCR models (such as transformer-based line recognizers) are trained to transcribe diverse historical scripts (*Śāradā*, *Grantha*, *Nandināgarī*, *Maithili*, *Devanagari*).
 
-### 3. Indic Optical Character Recognition (OCR) & Handwriting Recognition (HTR)
-- Training deep learning vision models on historical Indic scripts (*Devanagari*, *Grantha*, *Śāradā*, *Newar*).
-- Overcoming challenges of conjunct ligature variations and damaged backgrounds.
+### 3. TEI XML (Text Encoding Initiative)
+A global standard for encoding critical editions, textual variants (*pāṭhāntara*), editorial footnotes, and scholarly metadata in structured XML format.
 
-### 4. Interoperable Lexical Databases & Graph Ontologies
-- Connecting digitized texts with formal grammatical engines (like Sanskrit Digital Reader) enables automated indexing, searchability, and instant educational glossaries.
-
----
-
-## 🌐 Open-Access Preservation Initiatives
-
-Several pioneering global organizations lead the digital Sanskrit conservation effort:
-- **National Mission for Manuscripts (NMM, India)**: Documenting and microfilming millions of manuscripts across Indian repositories.
-- **Muktabodha Indological Research Institute**: Open-access digital library preserving rare Tantric, Śaiva, and philosophical texts.
-- **The Sanskrit Library**: Standardized computational linguistic corpora and lexical resources.
-- **GRETIL (Göttingen Register of Electronic Texts in Indian Languages)**: Machine-readable digital corpus for Indological research.
-- **SARIT (Search and Retrieval of Indic Texts)**: Standardized TEI-compliant XML repository of philosophical texts.
-
----
-
-## 🌟 Why Digital Preservation Matters for Future Generations
-
-1. **Democratic Access**: Makes rare texts housed in remote monasteries or private archives instantly accessible to students and researchers worldwide.
-2. **Disaster Resilience**: Digital backups safeguard against catastrophic loss from floods, fires, or political unrest.
-3. **Cross-Disciplinary Discovery**: Computational search across millions of folios enables historians to reconstruct lost intellectual dialogues, trade routes, and scientific developments.
+### 4. Semantic Web & Open Knowledge Graphs
+Linking disparate manuscript repositories with Linked Open Data (LOD) principles to create an interconnected knowledge web of classical Indian philosophy, science, astronomy, and literature.

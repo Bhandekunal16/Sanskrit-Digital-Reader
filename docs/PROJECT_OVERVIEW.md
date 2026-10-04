@@ -2,14 +2,17 @@
 
 ## 🎯 Objectives
 
-**Sanskrit Digital Reader** is designed to demonstrate how computational tools can facilitate the study, linguistic analysis, and long-term preservation of Sanskrit literature. 
+**Sanskrit Vani** (संस्कृत-वाणी) is designed to demonstrate how modern computational language technology, phonetic acoustics, and digital tools can facilitate the study, linguistic analysis, and long-term preservation of Sanskrit literature.
 
 The primary goals of the project are:
 1. **Demystify Sanskrit Grammar**: Provide instant, accessible linguistic analysis for Sanskrit words, including root (*dhātu*), grammatical case (*vibhakti*), verbal tense (*lakāra*), and morphological decomposition (*prakṛti-pratyaya*).
-2. **Promote Phonetic & Transliteration Literacy**: Demonstrate standardized Latin transliteration (IAST / ISO 15919) alongside traditional Devanagari script.
-3. **Enhance Reading Comprehension**: Enable users to read classical verses interactively, clicking individual word tokens to reveal their contextual grammar, meaning, and syntactic role (*Anvaya*).
-4. **Educate on Language Technology**: Clearly explain how computational lexicography, transliteration, morphological parsing, and Natural Language Processing (NLP) interconnect with traditional Sanskrit grammar (such as Pāṇini’s *Aṣṭādhyāyī*).
-5. **Highlight Digital Preservation**: Raise awareness about the world's estimated 30+ million Sanskrit manuscripts, many of which face physical decay and require digital archiving.
+2. **Promote Phonetic & Pronunciation Mastery**: Provide an interactive 52-varṇa Varṇamālā studio with visual vocal tract anatomy, dual-engine audio synthesis (formants + speech), and Bāraha-khaḍī mātrā charts.
+3. **Foster Standardized Transliteration Literacy**: Demonstrate lossless bidirectional conversion between Devanagari script and standardized Latin transliteration (IAST / ISO 15919).
+4. **Enhance Multilingual Translation**: Offer comparative side-by-side translations into Hindi (हिन्दी), Marathi (मराठी), and English with word-by-word grammatical glosses.
+5. **Interactive Passage Reading**: Enable learners to read classical verses (*Hitopadeśa*, *Gītā*, *Upaniṣads*) interactively, selecting individual word tokens to reveal their contextual grammar, meaning, and syntactic prose order (*Anvaya*).
+6. **Self-Assessment & Mastery**: Provide an 8-category Sanskrit assessment engine with immediate feedback, hints, and explanations.
+7. **Educate on Language Technology**: Explain how computational lexicography, transliteration, morphological parsing, and NLP interconnect with traditional Pāṇinian grammar (*Aṣṭādhyāyī*).
+8. **Highlight Digital Preservation**: Raise awareness about the world's estimated 30+ million Sanskrit manuscripts requiring digital archiving.
 
 ---
 
@@ -18,16 +21,17 @@ The primary goals of the project are:
 Sanskrit is renowned for its mathematical precision and comprehensive grammatical tradition, established over two millennia ago by Pāṇini. However, beginners and modern readers often encounter significant barriers:
 - **Complex Agglutination & Sandhi**: Words are frequently fused phonetically into continuous compounds.
 - **Rich Inflectional Paradigms**: A single noun stem can have 24 distinct inflections (8 cases × 3 numbers), and a verbal root can produce dozens of forms across 10 tenses/moods (*lakāras*).
-- **Script Familiarity**: International students and interdisciplinary researchers may not be fluent in Devanagari script.
+- **Phonetic & Pronunciation Ambiguity**: Nuances between retroflex (*Mūrdhanya*) and dental (*Dantya*) stops, or sibilants (*ś*, *ṣ*, *s*), are often misunderstood.
+- **Script Familiarity**: International students and researchers may require simultaneous Devanagari and IAST diacritical representations.
 
-Sanskrit Digital Reader bridges these gaps by providing an interactive learning environment that translates complex linguistic structures into transparent, human-readable visual representations.
+Sanskrit Vani bridges these gaps by providing an interactive learning environment that translates complex linguistic structures into transparent, human-readable visual and auditory representations.
 
 ---
 
 ## 👥 Target Users
 
-- **Sanskrit Students & Beginners**: Learners seeking a digital companion to look up words, understand grammatical cases, and verify pronunciation.
-- **Teachers & Educators**: Instructors looking for clean visual aids to explain morphological decomposition and verse analysis in classroom settings.
+- **Sanskrit Students & Beginners**: Learners seeking a digital companion to look up words, verify pronunciation, master vowels and consonants, and take quizzes.
+- **Teachers & Educators**: Instructors looking for clean visual aids to explain morphological decomposition, vocal tract articulation places, and verse analysis.
 - **Linguists & NLP Researchers**: Computational linguists interested in how formal Pāṇinian rules map to digital language pipelines, tokenization, and transliteration standards.
 - **Digital Humanities Enthusiasts**: Individuals interested in manuscript conservation, open-access archives, and the digital preservation of ancient literature.
 
@@ -35,29 +39,20 @@ Sanskrit Digital Reader bridges these gaps by providing an interactive learning 
 
 ## 💡 Problems Addressed
 
-| Problem | Digital Solution in Sanskrit Digital Reader |
+| Problem | Digital Solution in Sanskrit Vani |
 | :--- | :--- |
 | **Obscure Grammatical Forms** | Structured breakdown of nominal/verbal forms with clear case and tense labels. |
+| **Phonetic & Pronunciation Confusion** | 52-varṇa interactive audio/visual studio with vocal tract anatomy, formant synthesis, and Bāraha-khaḍī. |
 | **Difficult Compound Resolution** | Word-by-word tokenization and Sandhi splitting in the reader module. |
 | **Phonetic Ambiguity** | Live bidirectional conversion between Devanagari and standardized IAST diacritics. |
-| **Isolated Vocabulary Learning** | Each lexical entry is paired with authentic literary examples (*Gītā*, *Subhāṣita*, *Upaniṣad*). |
+| **Cross-Lingual Access** | Comparative translations in Hindi, Marathi, and English. |
+| **Lack of Active Practice** | 8-category quiz and assessment engine with immediate feedback. |
 | **Lack of Preservation Awareness** | Dedicated educational modules detailing manuscript challenges and archival solutions. |
-
----
-
-## 🔬 How the Application Demonstrates Language Technology
-
-1. **Digital Lexicography**: Demonstrates how structured JSON/TypeScript knowledge graphs can store and query headwords, roots, semantic classes, and grammatical parameters.
-2. **Deterministic Transliteration**: Implements a client-side phonotactic mapping engine to convert between Devanagari script and IAST without external API latency.
-3. **Interactive Syntactic Reading**: Transforms raw classical text into interactive tokens that provide on-demand grammatical annotations and prose order (*Anvaya*).
-4. **Phonetic Articulation Taxonomy**: Illustrates the classical Pāṇinian categorization of phonemes by physiological place of articulation (*Sthāna*).
 
 ---
 
 ## ⚠️ Scope and Limitations
 
-To maintain transparency and pedagogical integrity, this application explicitly acknowledges its scope:
-
-- **Baseline Educational Lexicon**: The application uses a local curated dataset of representative Sanskrit entries. It is not an exhaustive replacement for multi-volume historical dictionaries like Monier-Williams or Apte.
-- **Deterministic Rule-Based Transliteration**: The transliteration tool handles standard classical Sanskrit phonotactics. It is an educational demonstration rather than an exhaustive Vedic accentuation engine.
-- **Rule-Based Reader Annotation**: The reader utilizes pre-tokenized, curated classical passages to ensure absolute linguistic accuracy rather than relying on experimental black-box AI parsers.
+- **Baseline Educational Lexicon**: The application uses a local curated dataset of representative Sanskrit entries. It is an educational demonstration rather than an exhaustive multi-volume historical dictionary.
+- **Deterministic Rule-Based Transliteration**: The transliteration tool handles standard classical Sanskrit phonotactics deterministically.
+- **Curated Classical Passages**: The reader utilizes pre-tokenized, curated classical passages to ensure absolute grammatical fidelity.

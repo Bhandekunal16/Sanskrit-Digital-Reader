@@ -1,75 +1,25 @@
-# Sanskrit & Language Technology
+# Sanskrit Language Technology & Computational Linguistics
 
-This document explores the deep intersection between classical Sanskrit grammatical traditions and modern computational linguistics.
-
----
-
-## 🏛️ Pāṇini’s *Aṣṭādhyāyī*: The First Formal Generative Grammar
-
-Long before the invention of digital computers or modern formal linguistics (Chomsky, 1956), the ancient Indian grammarian **Pāṇini** (circa 4th century BCE) formalized Sanskrit syntax and morphology in the ***Aṣṭādhyāyī*** ("Eight Chapters").
-
-### Algorithmic Characteristics of Pāṇini's System:
-1. **Algebraic Conciseness (3,959 Sūtras)**: A generative rule-set that derives any valid Sanskrit word from basic verbal roots (*dhātus*) and nominal stems (*prātipadikas*).
-2. **Auxiliary Markers (*It-saṃjñā*)**: Phonetic tags attached to roots and affixes that act like conditional variables in modern programming to trigger specific phonological rules.
-3. **Meta-Rules & Precedence (*Paribhāṣā*)**: Formal rule-ordering algorithms (e.g., *Vipratiṣedhe paraṃ kāryam* — "In case of conflict between two rules of equal force, the subsequent rule prevails").
-4. **Precursor to BNF (Backus-Naur Form)**: Computer scientists have noted that Panini's concise generative notation anticipated context-free formal grammars and metalanguages used in compiler design.
+The **Language Technology** section at `/technology` provides an academic and technical overview of how formal grammar algorithms, phonetics, encoding standards, and machine learning power modern Sanskrit informatics.
 
 ---
 
-## 🔬 Core Dimensions of Sanskrit Language Technology
+## 🔬 Core Pillars of Sanskrit Informatics
 
-```mermaid
-graph TD
-    A[Sanskrit Language Technology] --> B[1. Digital Lexicons & Dictionaries]
-    A --> C[2. Phonetic Transliteration & Encoding]
-    A --> D[3. Morphological Analyzers & FSTs]
-    A --> E[4. Multilingual Translation & NLP]
-    A --> F[5. Digital Preservation & OCR]
-```
+### 1. Pāṇini’s *Aṣṭādhyāyī* as Formal Generative Grammar
+Over 2,400 years before modern computer science, sage Pāṇini authored the *Aṣṭādhyāyī*—a formal grammar consisting of 3,959 concise, rule-ordered algebraic sūtras. It functions as a complete generative state machine with:
+- Auxiliary markers (*it* letters) functioning as control flags.
+- Strict rule-precedence (*Paribhāṣā* rules) and scope inheritance (*anuvṛtti*).
+- Context-free and context-sensitive rewrite rules equivalent to Backus-Naur Form (BNF).
 
----
+### 2. Unicode Standardization (U+0900–U+097F)
+The Unicode standard maps Sanskrit consonants, independent vowels, dependent mātrās, Vedic accents (*Udātta*, *Anudātta*, *Svarita*), and special ligatures into a standardized 128-code-point block.
 
-### 1. Digital Dictionaries & Lexical Graphs
-- **Traditional Precedent**: Synonym thesauri like the *Amarakośa* arranged vocabulary conceptually rather than alphabetically.
-- **Modern Implementations**:
-  - Digital digitization of 19th/20th-century historical lexicons (Monier-Williams Sanskrit-English Dictionary, V.S. Apte Practical Sanskrit-English Dictionary, Cologne Digital Sanskrit Lexicon).
-  - Graph-based wordnets (Sanskrit WordNet) connecting synonymy, antonymy, hypernymy, and *kāraka* relationships.
+### 3. Finite-State Morphological Parsers (FSTs)
+Morphological analyzers model Sanskrit nominal declensions (8 cases × 3 numbers) and verbal conjugations (10 lakāras × 3 persons × 3 numbers × 2 padas) as finite-state automata, allowing $O(1)$ morphological generation and parsing.
 
----
+### 4. Computational Sandhi Splitting & Dependency Parsing
+In natural Sanskrit texts, words fuse phonetically. Modern NLP pipelines use probabilistic models and rule tables to perform Sandhi split analysis (*Padaccheda*) and reconstruct Kāraka syntactic dependency trees.
 
-### 2. Standardized Transliteration & Unicode
-- **Unicode Standard**: Allocates block `U+0900` through `U+097F` for standard Devanagari script representation.
-- **Transliteration Schemes**:
-  - **IAST (ISO 15919)**: Human-readable standard for publications with full diacritics.
-  - **SLP1 (Sanskrit Library Phonetic Basic Scheme)**: Single-character ASCII encoding designed for high-efficiency computational processing.
-  - **ITRANS & Harvard-Kyoto**: Early ASCII schemes designed for standard QWERTY keyboards.
-
----
-
-### 3. Morphological Analysis & Rule Engines
-- **Finite-State Transducers (FSTs)**: Computational models that encode nominal declensions (8 cases × 3 numbers) and verbal paradigms (10 *lakāras* × 3 persons × 3 numbers × 2 voices).
-- **Stem-Affix Parsing**: Automated extraction of the base root (*dhātu*), prefixes (*upasargas*), and suffixes (*kṛt*, *taddhita*, *tiṅ*).
-
----
-
-### 4. Multilingual Machine Translation & Cross-Lingual NLP
-Translating Sanskrit into modern Indo-Aryan languages (Hindi, Marathi) or English demonstrates how language technology democratizes access across linguistic boundaries. Key NLP tasks include:
-
-| NLP Task | Description | Computational Complexity |
-| :--- | :--- | :--- |
-| **Sandhi Splitting (*Padaccheda*)** | Segmenting phonologically merged word boundaries (e.g. `कर्मण्येवाधिकारस्ते` → `कर्मणि + एव + अधिकारः + ते`). | Highly ambiguous; multiple valid splits must be filtered via semantic context. |
-| **Compound Deconstruction (*Samāsa Vigraha*)** | Decomposing long noun compounds into constituent words and identifying internal relations (*Tatpuruṣa*, *Bahuvrīhi*, *Dvandva*). | Exponential combination paths in multi-word compounds. |
-| **Dependency Parsing (*Kāraka Analysis*)** | Mapping thematic case roles (agent, patient, instrument, locus) to analyze non-fixed word order sentences. | Free word-order syntax requires semantic constraint satisfaction. |
-| **Syntactic Reordering** | Translating free poetic Sanskrit word order into target language SOV (Hindi/Marathi) or SVO (English) structures. | Requires deep dependency trees and morphological agreement modeling. |
-
----
-
-## ⚖️ Implementation Scope of This Application
-
-| Feature | Implemented in Sanskrit Digital Reader | Scope of Enterprise / Research Systems |
-| :--- | :---: | :---: |
-| **Lexicon Lookup** | ✅ Curated baseline dataset | Full million-entry historical corpora |
-| **Transliteration** | ✅ Real-time bidirectional Devanagari ⇄ IAST | Complex Vedic accent parsing & multi-script conversion |
-| **Reader Tokenization** | ✅ Pre-annotated, verified classical verses | Automated AI Sandhi segmentation for unedited texts |
-| **Grammatical Display** | ✅ Pāṇinian decomposition & case markers | Full generative FST word derivation engine |
-| **Multilingual Translation** | ✅ Curated Hindi, Marathi, & English dataset with gloss fallback | Full unconstrained neural machine translation (NMT) |
+### 5. 5-Stage Digital Pipeline
+$$\text{Raw Sanskrit} \longrightarrow \text{Tokenization / Sandhi} \longrightarrow \text{Morphological Parsing} \longrightarrow \text{Kāraka Syntax} \longrightarrow \text{Multilingual Translation}$$
