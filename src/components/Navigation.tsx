@@ -6,6 +6,7 @@ import {
   ArrowRightLeft, 
   Globe, 
   ScrollText, 
+  GraduationCap,
   Cpu, 
   Info 
 } from 'lucide-react';
@@ -22,6 +23,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   '/transliteration': ArrowRightLeft,
   '/translation': Globe,
   '/reader': ScrollText,
+  '/quiz': GraduationCap,
   '/technology': Cpu,
   '/about': Info,
 };

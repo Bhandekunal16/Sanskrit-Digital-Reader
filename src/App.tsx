@@ -16,6 +16,7 @@ import { SanskritReader } from './components/SanskritReader';
 import { PhonologicalMap } from './components/PhonologicalMap';
 import { TechnologySection } from './components/TechnologySection';
 import { DigitalPreservation } from './components/DigitalPreservation';
+import { QuizSection } from './components/QuizSection';
 import { Footer } from './components/Footer';
 import { SANSKRIT_DICTIONARY, SanskritEntry } from './data/sanskritDictionary';
 import { searchDictionary, getEntryByDevanagari } from './lib/dictionary';
@@ -369,7 +370,14 @@ function AppContent() {
           </div>
         )}
 
-        {/* ROUTE 6: Language Technology Page (/technology) */}
+        {/* ROUTE 6: Quiz Page (/quiz) */}
+        {pathname === '/quiz' && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+            <QuizSection />
+          </div>
+        )}
+
+        {/* ROUTE 7: Language Technology Page (/technology) */}
         {pathname === '/technology' && (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
             <div className="border-b border-[#E8E1D5] pb-6">

@@ -6,6 +6,7 @@ export type AppRoute =
   | '/transliteration'
   | '/translation'
   | '/reader'
+  | '/quiz'
   | '/technology'
   | '/about';
 
@@ -20,6 +21,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
   { name: 'Transliteration', href: '/transliteration' },
   { name: 'Translation', href: '/translation' },
   { name: 'Reader', href: '/reader' },
+  { name: 'Quiz', href: '/quiz' },
   { name: 'Language Technology', href: '/technology' },
   { name: 'About', href: '/about' },
 ];
