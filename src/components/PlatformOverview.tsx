@@ -290,9 +290,62 @@ export const PlatformOverview: React.FC<PlatformOverviewProps> = ({ onStartReadi
       </div>
 
       {/* 4. Secondary Module Grid (Consistent Information Architecture) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
         
-        {/* Module 1: Digital Lexicon */}
+        {/* Module 1: Vowels & Consonants (Varṇamālā) */}
+        <div className="bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl p-6 shadow-2xs transition-all flex flex-col justify-between group">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-xl bg-[#FAF7F2] text-[#8C4A2F] border border-[#EAE3D6] flex items-center justify-center group-hover:bg-[#8C4A2F] group-hover:text-white transition-colors">
+                <Volume2 className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] font-mono-code font-bold uppercase tracking-wider text-[#8C4A2F] bg-[#FAF7F2] px-2 py-0.5 rounded border border-[#EAE3D6]">
+                Phonetics
+              </span>
+            </div>
+
+            <div>
+              <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1917]">
+                Vowels & Consonants
+              </h3>
+              <p className="text-xs text-[#57534E] mt-1.5 leading-relaxed">
+                Watch articulatory anatomy, explore 52 varṇas, and hear authentic audio pronunciation.
+              </p>
+            </div>
+
+            <div className="pt-2 border-t border-[#F2EDE2]">
+              <span className="text-[11px] font-mono-code uppercase tracking-wider text-[#78716C] block mb-2 font-semibold">
+                Capabilities:
+              </span>
+              <ul className="space-y-1.5 text-xs text-[#44403C]">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8C4A2F]"></span>
+                  <span>52 Varṇa Audio Player</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8C4A2F]"></span>
+                  <span>Bāraha-khaḍī Mātrā Studio</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8C4A2F]"></span>
+                  <span>Ear Training & Sūtras</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-[#F2EDE2]">
+            <Link
+              href="/vowels-consonants"
+              className="inline-flex items-center justify-between w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#FAF8F4] group-hover:bg-[#8C4A2F] text-[#8C4A2F] group-hover:text-white font-medium text-xs transition-colors border border-[#E8E1D5] group-hover:border-[#8C4A2F]"
+            >
+              <span>Watch & Hear Varṇas</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Module 2: Digital Lexicon */}
         <div className="bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl p-6 shadow-2xs transition-all flex flex-col justify-between group">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -345,7 +398,7 @@ export const PlatformOverview: React.FC<PlatformOverviewProps> = ({ onStartReadi
           </div>
         </div>
 
-        {/* Module 2: Transliteration */}
+        {/* Module 3: Transliteration */}
         <div className="bg-white border border-[#E8E1D5] hover:border-[#8C4A2F]/50 rounded-2xl p-6 shadow-2xs transition-all flex flex-col justify-between group">
           <div className="space-y-4">
             <div className="flex items-center justify-between">

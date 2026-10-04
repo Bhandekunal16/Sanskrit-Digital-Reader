@@ -3,6 +3,7 @@ import { Link, usePathname, NAV_ITEMS, NavItemConfig } from '../lib/router';
 import { 
   Home, 
   BookOpen, 
+  Volume2,
   ArrowRightLeft, 
   Globe, 
   ScrollText, 
@@ -20,6 +21,7 @@ interface NavigationProps {
 const ICON_MAP: Record<string, React.ElementType> = {
   '/': Home,
   '/dictionary': BookOpen,
+  '/vowels-consonants': Volume2,
   '/transliteration': ArrowRightLeft,
   '/translation': Globe,
   '/reader': ScrollText,

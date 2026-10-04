@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useMe
 export type AppRoute = 
   | '/'
   | '/dictionary'
+  | '/vowels-consonants'
   | '/transliteration'
   | '/translation'
   | '/reader'
@@ -18,6 +19,7 @@ export interface NavItemConfig {
 export const NAV_ITEMS: NavItemConfig[] = [
   { name: 'Home', href: '/' },
   { name: 'Dictionary', href: '/dictionary' },
+  { name: 'Vowels & Consonants', href: '/vowels-consonants' },
   { name: 'Transliteration', href: '/transliteration' },
   { name: 'Translation', href: '/translation' },
   { name: 'Reader', href: '/reader' },
@@ -68,11 +70,16 @@ export function normalizePath(path: string): string {
   clean = clean.replace(/\/+$/, '');
 
   // Default empty to root
-  const result = clean === '' ? '/' : clean;
+  let result = clean === '' ? '/' : clean;
+
+  // Handle convenient aliases
+  if (result === '/varnamala' || result === '/alphabet' || result === '/phonetics' || result === '/vowels' || result === '/consonants') {
+    result = '/vowels-consonants';
+  }
 
   // Validate against known routes; if unknown, match closest or default to '/'
   const validRoutes: string[] = NAV_ITEMS.map((item) => item.href);
-  return validRoutes.includes(result) ? result : '/';
+  return validRoutes.includes(result) ? (result as AppRoute) : '/';
 }
 
 const ROUTE_CHANGE_EVENT = 'applet-route-change';

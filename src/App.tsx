@@ -17,6 +17,7 @@ import { PhonologicalMap } from './components/PhonologicalMap';
 import { TechnologySection } from './components/TechnologySection';
 import { DigitalPreservation } from './components/DigitalPreservation';
 import { QuizSection } from './components/QuizSection';
+import { VowelsConsonantsSection } from './components/VowelsConsonantsSection';
 import { Footer } from './components/Footer';
 import { SANSKRIT_DICTIONARY, SanskritEntry } from './data/sanskritDictionary';
 import { searchDictionary, getEntryByDevanagari } from './lib/dictionary';
@@ -313,7 +314,14 @@ function AppContent() {
           </div>
         )}
 
-        {/* ROUTE 3: Transliteration Page (/transliteration) */}
+        {/* ROUTE 3: Vowels & Consonants (स्वर एवं व्यञ्जन) Page (/vowels-consonants) */}
+        {pathname === '/vowels-consonants' && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+            <VowelsConsonantsSection onSelectWord={handleSelectWord} />
+          </div>
+        )}
+
+        {/* ROUTE 4: Transliteration Page (/transliteration) */}
         {pathname === '/transliteration' && (
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
             <div className="border-b border-[#E8E1D5] pb-6">
